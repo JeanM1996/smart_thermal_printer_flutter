@@ -304,7 +304,7 @@ class _DisconnectPrinterButtonState extends State<DisconnectPrinterButton> {
         color: widget.color ?? Colors.red,
       ),
       style: IconButton.styleFrom(
-        backgroundColor: (widget.color ?? Colors.red).withOpacity(0.1),
+        backgroundColor: (widget.color ?? Colors.red).withValues(alpha: 0.1),
         fixedSize: Size(widget.size, widget.size),
       ),
       tooltip: 'Desconectar impresora',

@@ -1,15 +1,17 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_thermal_printer/flutter_thermal_printer_method_channel.dart';
+import 'package:smart_thermal_printer_flutter/smart_thermal_printer_flutter_method_channel.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  MethodChannelFlutterThermalPrinter platform = MethodChannelFlutterThermalPrinter();
-  const MethodChannel channel = MethodChannel('flutter_thermal_printer');
+  MethodChannelSmartThermalPrinterFlutter platform =
+      MethodChannelSmartThermalPrinterFlutter();
+  const MethodChannel channel = MethodChannel('smart_thermal_printer_flutter');
 
   setUp(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
       channel,
       (MethodCall methodCall) async {
         return '42';
@@ -18,7 +20,8 @@ void main() {
   });
 
   tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, null);
   });
 
   test('getPlatformVersion', () async {

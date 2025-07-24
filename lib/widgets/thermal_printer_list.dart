@@ -97,13 +97,6 @@ class _ThermalPrinterListState extends State<ThermalPrinterList> {
     }
   }
 
-  void _stopScanning() async {
-    setState(() {
-      _isScanning = false;
-    });
-    await SmartThermalPrinterFlutter.instance.stopScan();
-  }
-
   void _onConnectionStateChanged() {
     if (mounted) {
       setState(() {});
@@ -177,7 +170,7 @@ class _ThermalPrinterListState extends State<ThermalPrinterList> {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
+                color: Colors.grey.withValues(alpha: 0.1),
                 spreadRadius: 1,
                 blurRadius: 3,
                 offset: const Offset(0, 2),
