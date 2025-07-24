@@ -1,7 +1,7 @@
 PODS:
   - flutter_blue_plus (0.0.1):
     - FlutterMacOS
-  - flutter_thermal_printer (0.0.1):
+  - smart_thermal_printer_flutter (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
   - path_provider_foundation (0.0.1):
@@ -10,15 +10,15 @@ PODS:
 
 DEPENDENCIES:
   - flutter_blue_plus (from `Flutter/ephemeral/.symlinks/plugins/flutter_blue_plus/macos`)
-  - flutter_thermal_printer (from `Flutter/ephemeral/.symlinks/plugins/flutter_thermal_printer/macos`)
+  - smart_thermal_printer_flutter (from `Flutter/ephemeral/.symlinks/plugins/smart_thermal_printer_flutter/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
 
 EXTERNAL SOURCES:
   flutter_blue_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_blue_plus/macos
-  flutter_thermal_printer:
-    :path: Flutter/ephemeral/.symlinks/plugins/flutter_thermal_printer/macos
+  smart_thermal_printer_flutter:
+    :path: Flutter/ephemeral/.symlinks/plugins/smart_thermal_printer_flutter/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
   path_provider_foundation:
@@ -26,7 +26,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   flutter_blue_plus: e2868679021f19d12a8c0c58a33f1df66ec7fa6a
-  flutter_thermal_printer: 89ad742652b32933223d893678c14cbd59579ed0
+  smart_thermal_printer_flutter: 89ad742652b32933223d893678c14cbd59579ed0
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
 

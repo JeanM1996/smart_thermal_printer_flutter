@@ -1,4 +1,4 @@
-group 'com.example.flutter_thermal_printer'
+group 'com.example.smart_thermal_printer_flutter'
 version '1.0'
 
 buildscript {
@@ -25,7 +25,7 @@ apply plugin: 'com.android.library'
 
 android {
     if (project.android.hasProperty("namespace")) {
-        namespace 'com.example.flutter_thermal_printer'
+        namespace 'com.example.smart_thermal_printer_flutter'
     }
 
     compileSdkVersion 33

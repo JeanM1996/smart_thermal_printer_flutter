@@ -2,7 +2,7 @@ import Flutter
 import UIKit
 import XCTest
 
-@testable import flutter_thermal_printer
+@testable import smart_thermal_printer_flutter // Adjust the import based on your plugin's module name
 
 // This demonstrates a simple unit test of the Swift portion of this plugin's implementation.
 //

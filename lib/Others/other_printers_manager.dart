@@ -24,7 +24,7 @@ class OtherPrinterManager {
   Stream<List<Printer>> get devicesStream => _devicesstream.stream;
   StreamSubscription? subscription;
 
-  static String channelName = 'flutter_thermal_printer/events';
+  static String channelName = 'smart_thermal_printer_flutter/events';
   EventChannel eventChannel = EventChannel(channelName);
 
   // Stop scanning for BLE devices
@@ -69,7 +69,8 @@ class OtherPrinterManager {
 
   Future<bool> isConnected(Printer device) async {
     if (device.connectionType == ConnectionType.USB) {
-      return await SmartThermalPrinterFlutterPlatform.instance.isConnected(device);
+      return await SmartThermalPrinterFlutterPlatform.instance
+          .isConnected(device);
     } else {
       try {
         final bt = BluetoothDevice.fromId(device.address!);
@@ -200,8 +201,8 @@ class OtherPrinterManager {
           address: map['vendorId'].toString(),
           isConnected: map['connected'] ?? false,
         );
-        printer.isConnected =
-            await SmartThermalPrinterFlutterPlatform.instance.isConnected(printer);
+        printer.isConnected = await SmartThermalPrinterFlutterPlatform.instance
+            .isConnected(printer);
         usbPrinters.add(printer);
       }
 

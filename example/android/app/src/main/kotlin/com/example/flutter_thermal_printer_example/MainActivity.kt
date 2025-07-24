@@ -1,4 +1,4 @@
-package com.example.flutter_thermal_printer_example
+package com.example.smart_thermal_printer_flutter_example
 
 import io.flutter.embedding.android.FlutterActivity
 

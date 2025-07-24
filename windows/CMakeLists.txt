@@ -51,7 +51,7 @@ target_link_libraries(${PLUGIN_NAME} PRIVATE flutter flutter_wrapper_plugin)
 # List of absolute paths to libraries that should be bundled with the plugin.
 # This list could contain prebuilt libraries, or libraries created by an
 # external build triggered from this build file.
-set(flutter_thermal_printer_bundled_libraries
+set(smart_thermal_printer_flutter_bundled_libraries
   ""
   PARENT_SCOPE
 )
@@ -81,7 +81,7 @@ FetchContent_MakeAvailable(googletest)
 # The plugin's C API is not very useful for unit testing, so build the sources
 # directly into the test binary rather than using the DLL.
 add_executable(${TEST_RUNNER}
-  test/flutter_thermal_printer_plugin_test.cpp
+  test/smart_thermal_printer_flutter_plugin_test.cpp
   ${PLUGIN_SOURCES}
 )
 apply_standard_settings(${TEST_RUNNER})

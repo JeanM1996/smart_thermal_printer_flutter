@@ -1,4 +1,4 @@
-package com.example.flutter_thermal_printer;
+package com.example.smart_thermal_printer_flutter;
 
 import static android.content.Context.USB_SERVICE;
 
@@ -29,7 +29,7 @@ public class UsbPrinter implements EventChannel.StreamHandler {
     @SuppressLint("StaticFieldLeak")
     private static Context context;
 
-    private static final String ACTION_USB_PERMISSION = "com.example.flutter_thermal_printer.USB_PERMISSION";
+    private static final String ACTION_USB_PERMISSION = "com.example.smart_thermal_printer_flutter.USB_PERMISSION";
     private static final String ACTION_USB_ATTACHED = "android.hardware.usb.action.USB_DEVICE_ATTACHED";
     private static final String ACTION_USB_DETACHED = "android.hardware.usb.action.USB_DEVICE_DETACHED";
     private static final String TAG = "FPP";
@@ -38,7 +38,7 @@ public class UsbPrinter implements EventChannel.StreamHandler {
     private BroadcastReceiver usbStateChangeReceiver;
 
     private void createUsbStateChangeReceiver() {
-        usbStateChangeReceiver =  new BroadcastReceiver() {
+        usbStateChangeReceiver = new BroadcastReceiver() {
             @SuppressLint("LongLogTag")
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -51,12 +51,13 @@ public class UsbPrinter implements EventChannel.StreamHandler {
                     Log.d(TAG, "ACTION_USB_DETACHED");
                     sendDevice(device);
                 }
-                Log.d(TAG, "ACTION_USB_PERMISSION " + (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)));
+                Log.d(TAG, "ACTION_USB_PERMISSION "
+                        + (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)));
                 if (Objects.equals(intent.getAction(), ACTION_USB_PERMISSION)) {
                     synchronized (this) {
                         UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                         boolean permissionGranted = intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false);
-                        if(permissionGranted) {
+                        if (permissionGranted) {
                             Log.d(TAG, "Permission granted for device " + device);
                             sendDevice(device);
                         } else {
@@ -85,8 +86,7 @@ public class UsbPrinter implements EventChannel.StreamHandler {
         }
     }
 
-
-    private void sendDevice(UsbDevice device ) {
+    private void sendDevice(UsbDevice device) {
         if (device == null) {
             Log.d(TAG, "Device is null.");
             return;
@@ -103,7 +103,6 @@ public class UsbPrinter implements EventChannel.StreamHandler {
         events.success(deviceData);
     }
 
-
     @Override
     public void onCancel(Object arguments) {
         if (events != null) {
@@ -116,7 +115,8 @@ public class UsbPrinter implements EventChannel.StreamHandler {
 
     UsbPrinter(Context context) {
         UsbPrinter.context = context;
-        mPermissionIntent = PendingIntent.getActivity(context, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE);
+        mPermissionIntent = PendingIntent.getActivity(context, 0, new Intent(ACTION_USB_PERMISSION),
+                PendingIntent.FLAG_IMMUTABLE);
     }
 
     public List<Map<String, Object>> getUsbDevicesList() {
@@ -142,7 +142,7 @@ public class UsbPrinter implements EventChannel.StreamHandler {
 
     private Integer requestingPermission = 0;
 
-    //    Connect using VendorId and ProductId
+    // Connect using VendorId and ProductId
     public void connect(String vendorId, String productId) {
         connectionVendorId = vendorId;
         connectionProductId = productId;
@@ -163,9 +163,10 @@ public class UsbPrinter implements EventChannel.StreamHandler {
             return;
         }
 
-        if (!m.hasPermission(device) && requestingPermission <2) {
+        if (!m.hasPermission(device) && requestingPermission < 2) {
             requestingPermission++;
-            PendingIntent permissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE);
+            PendingIntent permissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION),
+                    PendingIntent.FLAG_IMMUTABLE);
             m.requestPermission(device, permissionIntent);
         } else {
             requestingPermission = 0;
@@ -173,13 +174,14 @@ public class UsbPrinter implements EventChannel.StreamHandler {
         }
     }
 
-    //    Print text on the printer
+    // Print text on the printer
     public void printText(String vendorId, String productId, List<Integer> bytes) {
         UsbManager m = (UsbManager) context.getSystemService(USB_SERVICE);
         HashMap<String, UsbDevice> usbDevices = m.getDeviceList();
         UsbDevice device = null;
         for (Map.Entry<String, UsbDevice> entry : usbDevices.entrySet()) {
-            if (String.valueOf(entry.getValue().getVendorId()).equals(vendorId) && String.valueOf(entry.getValue().getProductId()).equals(productId)) {
+            if (String.valueOf(entry.getValue().getVendorId()).equals(vendorId)
+                    && String.valueOf(entry.getValue().getProductId()).equals(productId)) {
                 device = entry.getValue();
                 break;
             }
@@ -201,7 +203,8 @@ public class UsbPrinter implements EventChannel.StreamHandler {
         connection.claimInterface(device.getInterface(0), true);
         UsbEndpoint mBulkEndOut = null;
         for (int i = 0; i < device.getInterface(0).getEndpointCount(); i++) {
-            if (device.getInterface(0).getEndpoint(i).getType() == UsbConstants.USB_ENDPOINT_XFER_BULK && device.getInterface(0).getEndpoint(i).getDirection() == UsbConstants.USB_DIR_OUT) {
+            if (device.getInterface(0).getEndpoint(i).getType() == UsbConstants.USB_ENDPOINT_XFER_BULK
+                    && device.getInterface(0).getEndpoint(i).getDirection() == UsbConstants.USB_DIR_OUT) {
                 mBulkEndOut = device.getInterface(0).getEndpoint(i);
                 break;
             }
@@ -220,7 +223,8 @@ public class UsbPrinter implements EventChannel.StreamHandler {
         HashMap<String, UsbDevice> usbDevices = m.getDeviceList();
         UsbDevice device = null;
         for (Map.Entry<String, UsbDevice> entry : usbDevices.entrySet()) {
-            if (String.valueOf(entry.getValue().getVendorId()).equals(vendorId) && String.valueOf(entry.getValue().getProductId()).equals(productId)) {
+            if (String.valueOf(entry.getValue().getVendorId()).equals(vendorId)
+                    && String.valueOf(entry.getValue().getProductId()).equals(productId)) {
                 device = entry.getValue();
                 break;
             }
@@ -231,13 +235,13 @@ public class UsbPrinter implements EventChannel.StreamHandler {
         return m.hasPermission(device);
     }
 
-
     public boolean disconnect(String vendorId, String productId) {
         UsbManager m = (UsbManager) context.getSystemService(USB_SERVICE);
         HashMap<String, UsbDevice> usbDevices = m.getDeviceList();
         UsbDevice device = null;
         for (Map.Entry<String, UsbDevice> entry : usbDevices.entrySet()) {
-            if (String.valueOf(entry.getValue().getVendorId()).equals(vendorId) && String.valueOf(entry.getValue().getProductId()).equals(productId)) {
+            if (String.valueOf(entry.getValue().getVendorId()).equals(vendorId)
+                    && String.valueOf(entry.getValue().getProductId()).equals(productId)) {
                 device = entry.getValue();
                 break;
             }
@@ -249,7 +253,7 @@ public class UsbPrinter implements EventChannel.StreamHandler {
         if (!hasPermission) {
             return false;
         }
-        //  Release the interface
+        // Release the interface
         UsbDeviceConnection connection = m.openDevice(device);
         connection.releaseInterface(device.getInterface(0));
         connection.close();

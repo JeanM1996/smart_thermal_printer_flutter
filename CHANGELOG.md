@@ -35,9 +35,9 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 - **Impresión Rápida**: Conexión mantenida para impresión inmediata
 
 ### 🔄 Cambios de Ruptura (Breaking Changes)
-- **Renombrado Completo**: `flutter_thermal_printer` → `smart_thermal_printer_flutter`
-- **Clase Principal**: `FlutterThermalPrinter` → `SmartThermalPrinterFlutter`
-- **Nuevos Imports**: Actualizar imports a `smart_thermal_printer_flutter`
+
+
+
 - **API Mejorada**: Algunos métodos han sido refactorizados para mejor consistencia
 
 ### ✨ Mejoras
@@ -105,7 +105,7 @@ dependencies:
 ### 2. Actualizar Imports
 ```dart
 // Antes (v1.x)
-import 'package:flutter_thermal_printer/flutter_thermal_printer.dart';
+
 
 // Después (v2.0)
 import 'package:smart_thermal_printer_flutter/smart_thermal_printer_flutter_lib.dart';
