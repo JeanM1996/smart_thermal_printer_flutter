@@ -5,12 +5,12 @@
 import FlutterMacOS
 import Foundation
 
-import flutter_blue_plus
-import flutter_thermal_printer
+import flutter_blue_plus_darwin
 import path_provider_foundation
+import smart_thermal_printer_flutter
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FlutterBluePlusPlugin.register(with: registry.registrar(forPlugin: "FlutterBluePlusPlugin"))
-  FlutterThermalPrinterPlugin.register(with: registry.registrar(forPlugin: "FlutterThermalPrinterPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
+  SmartThermalPrinterFlutterPlugin.register(with: registry.registrar(forPlugin: "SmartThermalPrinterFlutterPlugin"))
 }

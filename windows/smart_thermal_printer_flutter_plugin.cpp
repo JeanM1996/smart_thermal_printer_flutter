@@ -1,4 +1,4 @@
-#include "flutter_thermal_printer_plugin.h"
+#include "smart_thermal_printer_flutter_plugin.h"
 
 // This must be included before many other Windows headers.
 #include <windows.h>
@@ -13,17 +13,17 @@
 #include <memory>
 #include <sstream>
 
-namespace flutter_thermal_printer {
+namespace smart_thermal_printer_flutter {
 
 // static
-void FlutterThermalPrinterPlugin::RegisterWithRegistrar(
+void SmartThermalPrinterFlutterPlugin::RegisterWithRegistrar(
     flutter::PluginRegistrarWindows *registrar) {
   auto channel =
       std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
-          registrar->messenger(), "flutter_thermal_printer",
+          registrar->messenger(), "smart_thermal_printer_flutter",
           &flutter::StandardMethodCodec::GetInstance());
 
-  auto plugin = std::make_unique<FlutterThermalPrinterPlugin>();
+  auto plugin = std::make_unique<SmartThermalPrinterFlutterPlugin>();
 
   channel->SetMethodCallHandler(
       [plugin_pointer = plugin.get()](const auto &call, auto result) {
@@ -33,11 +33,11 @@ void FlutterThermalPrinterPlugin::RegisterWithRegistrar(
   registrar->AddPlugin(std::move(plugin));
 }
 
-FlutterThermalPrinterPlugin::FlutterThermalPrinterPlugin() {}
+SmartThermalPrinterFlutterPlugin::SmartThermalPrinterFlutterPlugin() {}
 
-FlutterThermalPrinterPlugin::~FlutterThermalPrinterPlugin() {}
+SmartThermalPrinterFlutterPlugin::~SmartThermalPrinterFlutterPlugin() {}
 
-void FlutterThermalPrinterPlugin::HandleMethodCall(
+void SmartThermalPrinterFlutterPlugin::HandleMethodCall(
     const flutter::MethodCall<flutter::EncodableValue> &method_call,
     std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {
   if (method_call.method_name().compare("getPlatformVersion") == 0) {
@@ -56,4 +56,4 @@ void FlutterThermalPrinterPlugin::HandleMethodCall(
   }
 }
 
-}  // namespace flutter_thermal_printer
+}  // namespace smart_thermal_printer_flutter

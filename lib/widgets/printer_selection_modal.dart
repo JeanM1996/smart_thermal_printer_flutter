@@ -67,7 +67,7 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal> {
   Future<bool> _requestBluetoothPermissions() async {
     try {
       // Verificar si Bluetooth está disponible
-      if (await FlutterBluePlus.isAvailable == false) {
+      if (await FlutterBluePlus.isSupported == false) {
         return false;
       }
 

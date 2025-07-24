@@ -8,9 +8,9 @@
 #include <string>
 #include <variant>
 
-#include "flutter_thermal_printer_plugin.h"
+#include "smart_thermal_printer_flutter_plugin.h"
 
-namespace flutter_thermal_printer {
+namespace smart_thermal_printer_flutter {
 namespace test {
 
 namespace {
@@ -22,8 +22,8 @@ using flutter::MethodResultFunctions;
 
 }  // namespace
 
-TEST(FlutterThermalPrinterPlugin, GetPlatformVersion) {
-  FlutterThermalPrinterPlugin plugin;
+TEST(SmartThermalPrinterFlutterPlugin, GetPlatformVersion) {
+  SmartThermalPrinterFlutterPlugin plugin;
   // Save the reply value from the success callback.
   std::string result_string;
   plugin.HandleMethodCall(
@@ -40,4 +40,4 @@ TEST(FlutterThermalPrinterPlugin, GetPlatformVersion) {
 }
 
 }  // namespace test
-}  // namespace flutter_thermal_printer
+}  // namespace smart_thermal_printer_flutter

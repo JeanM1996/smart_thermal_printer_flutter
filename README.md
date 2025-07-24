@@ -97,6 +97,7 @@ ThermalPrinterList(
 
 ### 4. Botón de Impresión Inteligente (NUEVO!)
 
+#### Ejemplo Básico
 ```dart
 SmartThermalPrintButton(
   generatePrintData: () async {
@@ -116,6 +117,98 @@ SmartThermalPrintButton(
 )
 ```
 
+#### Ejemplo Avanzado con Modal Automático
+```dart
+SmartThermalPrintButton(
+  // Datos de impresión pre-generados
+  printData: myReceiptData,
+  
+  // Configuración del botón
+  buttonText: 'Imprimir Factura',
+  printingText: 'Imprimiendo...',
+  icon: Icon(Icons.receipt_long),
+  
+  // 🚀 NUEVA FUNCIONALIDAD: Modal automático
+  autoOpenPrinterSelection: true, // Abre modal si no hay impresora conectada
+  connectionTypes: [ConnectionType.BLE, ConnectionType.USB],
+  
+  // Configuración visual
+  buttonStyle: ElevatedButton.styleFrom(
+    backgroundColor: Colors.blue,
+    foregroundColor: Colors.white,
+    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+  ),
+  
+  // Mostrar información de impresora conectada
+  showConnectedPrinter: true,
+  connectedPrinterStyle: TextStyle(
+    fontSize: 12,
+    color: Colors.green,
+    fontWeight: FontWeight.w500,
+  ),
+  
+  // Callbacks
+  onPrintCompleted: () {
+    print('✅ Impresión exitosa');
+    // Mostrar notificación de éxito
+  },
+  
+  onPrintFailed: (error) {
+    print('❌ Error de impresión: $error');
+    // Mostrar diálogo de error
+  },
+  
+  onPrinterConnected: (printer) {
+    print('🔗 Conectado a: ${printer.name}');
+    // Guardar preferencia de impresora
+  },
+  
+  // Para documentos largos
+  longData: true,
+)
+```
+
+#### Ejemplo con Generación Dinámica de Datos
+```dart
+SmartThermalPrintButton(
+  generatePrintData: () async {
+    // Generar recibo dinámicamente
+    final receipt = await _buildReceipt();
+    
+    final profile = await CapabilityProfile.load();
+    final generator = Generator(PaperSize.mm80, profile);
+    List<int> bytes = [];
+    
+    // Header
+    bytes += generator.text('FACTURA DE VENTA',
+        styles: PosStyles(align: PosAlign.center, bold: true));
+    bytes += generator.feed(1);
+    
+    // Items
+    for (var item in receipt.items) {
+      bytes += generator.text('${item.name} x${item.quantity}');
+      bytes += generator.text('\$${item.price}',
+          styles: PosStyles(align: PosAlign.right));
+    }
+    
+    bytes += generator.feed(1);
+    bytes += generator.text('TOTAL: \$${receipt.total}',
+        styles: PosStyles(bold: true, align: PosAlign.center));
+    
+    bytes += generator.cut();
+    return bytes;
+  },
+  
+  buttonText: 'Imprimir Factura',
+  autoOpenPrinterSelection: true,
+  
+  onPrintCompleted: () async {
+    // Marcar factura como impresa
+    await _markReceiptAsPrinted();
+  },
+)
+```
+
 ### 5. Botón de Desconexión (NUEVO!)
 
 ```dart
@@ -125,6 +218,200 @@ DisconnectPrinterButton(
   onDisconnected: () {
     print('Impresora desconectada');
   },
+)
+```
+
+## 🎯 Funcionalidades Avanzadas
+
+### Modal Automático de Selección de Impresora
+
+El `SmartThermalPrintButton` incluye una funcionalidad revolucionaria: **modal automático**. Cuando el usuario intenta imprimir y no hay una impresora conectada, automáticamente se abre un modal para seleccionar y conectar una impresora.
+
+#### Características del Modal Automático:
+- 🔍 **Búsqueda Automática**: Escanea automáticamente las impresoras disponibles
+- 🔐 **Gestión de Permisos**: Solicita permisos de Bluetooth automáticamente si es necesario
+- 🎨 **UI Moderna**: Interfaz elegante con indicadores de estado
+- ⚡ **Conexión Rápida**: Una vez conectada, la impresora se mantiene persistente
+- 🔄 **Reconexión Automática**: Intenta reconectar si se pierde la conexión
+
+#### Ejemplo de Implementación Completa:
+```dart
+class PrintingScreen extends StatelessWidget {
+  final OrderData order;
+  
+  const PrintingScreen({Key? key, required this.order}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Orden #${order.number}')),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // Detalles de la orden
+            Expanded(
+              child: OrderSummary(order: order),
+            ),
+            
+            // Botón de impresión inteligente
+            SizedBox(
+              width: double.infinity,
+              child: SmartThermalPrintButton(
+                // 🚀 Funcionalidad clave: Modal automático
+                autoOpenPrinterSelection: true,
+                
+                // Tipos de conexión permitidos
+                connectionTypes: [
+                  ConnectionType.BLE,
+                  ConnectionType.USB,
+                  ConnectionType.NETWORK,
+                ],
+                
+                // Generación dinámica del recibo
+                generatePrintData: () => _generateOrderReceipt(order),
+                
+                // Configuración visual
+                buttonText: 'Imprimir Orden',
+                printingText: 'Imprimiendo orden...',
+                icon: Icon(Icons.print),
+                buttonStyle: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                ),
+                
+                // Mostrar impresora conectada
+                showConnectedPrinter: true,
+                connectedPrinterStyle: TextStyle(
+                  color: Colors.green[700],
+                  fontSize: 12,
+                ),
+                
+                // Manejo de eventos
+                onPrintCompleted: () {
+                  // Mostrar éxito y navegar
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('✅ Orden impresa exitosamente'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                  Navigator.pop(context);
+                },
+                
+                onPrintFailed: (error) {
+                  // Mostrar error específico
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Error de Impresión'),
+                      content: Text('No se pudo imprimir la orden:\n$error'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Cerrar'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                
+                onPrinterConnected: (printer) {
+                  // Opcional: Guardar preferencia
+                  _savePreferredPrinter(printer);
+                },
+              ),
+            ),
+            
+            SizedBox(height: 16),
+            
+            // Botón de desconexión (opcional)
+            DisconnectPrinterButton(
+              onDisconnected: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Impresora desconectada')),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Future<List<int>> _generateOrderReceipt(OrderData order) async {
+    final profile = await CapabilityProfile.load();
+    final generator = Generator(PaperSize.mm80, profile);
+    List<int> bytes = [];
+    
+    // Header del recibo
+    bytes += generator.text(
+      'RESTAURANT NAME',
+      styles: PosStyles(align: PosAlign.center, bold: true, height: PosTextSize.size2),
+    );
+    bytes += generator.text(
+      'Orden #${order.number}',
+      styles: PosStyles(align: PosAlign.center),
+    );
+    bytes += generator.text('Fecha: ${DateTime.now().toString().substring(0, 16)}');
+    bytes += generator.hr();
+    
+    // Items de la orden
+    for (var item in order.items) {
+      bytes += generator.text('${item.name} x${item.quantity}');
+      bytes += generator.text(
+        '\$${item.total.toStringAsFixed(2)}',
+        styles: PosStyles(align: PosAlign.right),
+      );
+    }
+    
+    bytes += generator.hr();
+    bytes += generator.text(
+      'TOTAL: \$${order.total.toStringAsFixed(2)}',
+      styles: PosStyles(align: PosAlign.center, bold: true, height: PosTextSize.size2),
+    );
+    
+    bytes += generator.feed(2);
+    bytes += generator.cut();
+    
+    return bytes;
+  }
+  
+  void _savePreferredPrinter(Printer printer) {
+    // Implementar guardado de preferencias
+    // SharedPreferences, SQLite, etc.
+  }
+}
+```
+
+### Mejores Prácticas para el Botón Inteligente
+
+#### ✅ Recomendaciones:
+
+1. **Siempre usa `autoOpenPrinterSelection: true`** para la mejor experiencia de usuario
+2. **Especifica los `connectionTypes`** apropiados para tu aplicación
+3. **Implementa `onPrintFailed`** para manejo robusto de errores
+4. **Usa `showConnectedPrinter: true`** para transparencia del usuario
+5. **Para documentos grandes, usa `longData: true`**
+
+#### ❌ Evita:
+
+1. No proporcionar feedback al usuario (siempre usa callbacks)
+2. No manejar errores de conexión
+3. Usar el botón sin el modal automático en aplicaciones de producción
+4. Ignorar los estados de carga (printingText es importante)
+
+#### 🔧 Configuración Recomendada:
+
+```dart
+SmartThermalPrintButton(
+  autoOpenPrinterSelection: true,    // ✅ Siempre incluir
+  connectionTypes: [...],            // ✅ Especificar tipos
+  showConnectedPrinter: true,        // ✅ Transparencia
+  longData: true,                    // ✅ Para docs grandes
+  onPrintCompleted: () => {},        // ✅ Manejo de éxito
+  onPrintFailed: (error) => {},      // ✅ Manejo de errores
+  onPrinterConnected: (printer) => {}, // ✅ Opcional pero útil
 )
 ```
 
@@ -325,33 +612,154 @@ ThermalPrinterList(
 )
 ```
 
-### SmartThermalPrintButton
+### SmartThermalPrintButton - API Completa
 
+#### Propiedades de Datos:
 ```dart
 SmartThermalPrintButton(
-  printData: myPrintData, // O usar generatePrintData
-  buttonText: 'Imprimir Factura',
-  printingText: 'Procesando...',
+  // OPCIÓN 1: Datos pre-generados
+  printData: List<int>?, // Datos de impresión en bytes
+  
+  // OPCIÓN 2: Generación dinámica
+  generatePrintData: Future<List<int>> Function()?, // Función para generar datos
+  
+  // Nota: Debe especificar printData O generatePrintData, no ambos
+)
+```
+
+#### Propiedades de Configuración:
+```dart
+SmartThermalPrintButton(
+  // 🚀 NUEVA FUNCIONALIDAD: Modal automático
+  autoOpenPrinterSelection: true,          // Abre modal si no hay impresora
+  connectionTypes: [                       // Tipos de conexión permitidos
+    ConnectionType.BLE,
+    ConnectionType.USB,
+    ConnectionType.NETWORK,
+  ],
+  
+  // Configuración del botón
+  buttonText: 'Imprimir',                  // Texto del botón
+  printingText: 'Imprimiendo...',          // Texto durante impresión
+  icon: Icon(Icons.print),                 // Icono del botón
+  height: 56.0,                           // Altura del botón
+  
+  // Estilos personalizados
   buttonStyle: ElevatedButton.styleFrom(
-    backgroundColor: Colors.green,
+    backgroundColor: Colors.blue,
     foregroundColor: Colors.white,
     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(8),
     ),
   ),
-  icon: Icon(Icons.print),
-  longData: true, // Para datos grandes
-  showConnectedPrinter: true, // Mostrar nombre de impresora
-  height: 60, // Altura personalizada
+  
+  // Configuración de impresora conectada
+  showConnectedPrinter: true,              // Mostrar info de impresora
+  connectedPrinterStyle: TextStyle(        // Estilo del texto de impresora
+    fontSize: 12,
+    color: Colors.green,
+    fontWeight: FontWeight.w500,
+  ),
+  
+  // Configuración de impresión
+  longData: true,                          // Para documentos grandes
+)
+```
+
+#### Callbacks Disponibles:
+```dart
+SmartThermalPrintButton(
+  // Callback de éxito
   onPrintCompleted: () {
-    print('¡Impresión exitosa!');
+    print('✅ Impresión completada exitosamente');
+    // Lógica post-impresión
   },
-  onPrintFailed: (error) {
-    print('Error: $error');
+  
+  // Callback de error
+  onPrintFailed: (String error) {
+    print('❌ Error de impresión: $error');
+    // Manejo de errores específicos
+    showErrorDialog(error);
+  },
+  
+  // Callback de conexión (NUEVO)
+  onPrinterConnected: (Printer printer) {
+    print('🔗 Conectado a: ${printer.name}');
+    // Guardar preferencias, mostrar notificación, etc.
   },
 )
 ```
+
+#### Ejemplo Completo con Todas las Propiedades:
+```dart
+SmartThermalPrintButton(
+  // Datos y generación
+  generatePrintData: () async {
+    return await generateInvoiceData();
+  },
+  
+  // Modal automático (RECOMENDADO)
+  autoOpenPrinterSelection: true,
+  connectionTypes: [
+    ConnectionType.BLE,
+    ConnectionType.USB,
+  ],
+  
+  // Configuración visual
+  buttonText: 'Imprimir Factura',
+  printingText: 'Generando factura...',
+  icon: Icon(Icons.receipt_long),
+  height: 64,
+  
+  buttonStyle: ElevatedButton.styleFrom(
+    backgroundColor: Colors.indigo,
+    foregroundColor: Colors.white,
+    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+    elevation: 3,
+  ),
+  
+  // Info de impresora
+  showConnectedPrinter: true,
+  connectedPrinterStyle: TextStyle(
+    fontSize: 11,
+    color: Colors.green[700],
+    fontWeight: FontWeight.w600,
+  ),
+  
+  // Configuración de impresión
+  longData: true,
+  
+  // Callbacks completos
+  onPrintCompleted: () {
+    HapticFeedback.lightImpact();
+    showSuccessSnackBar('Factura impresa exitosamente');
+    Navigator.pop(context);
+  },
+  
+  onPrintFailed: (error) {
+    HapticFeedback.heavyImpact();
+    showErrorDialog('Error al imprimir', error);
+  },
+  
+  onPrinterConnected: (printer) {
+    PreferencesService.savePreferredPrinter(printer.id);
+    showInfoSnackBar('Conectado a ${printer.name}');
+  },
+)
+```
+
+#### Estados del Botón:
+
+El botón maneja automáticamente diferentes estados visuales:
+
+- **🔴 Sin Impresora**: Muestra texto normal, al presionar abre modal (si `autoOpenPrinterSelection: true`)
+- **🟢 Impresora Conectada**: Muestra información de la impresora conectada
+- **🟡 Imprimiendo**: Muestra `printingText` con indicador de carga
+- **⚫ Deshabilitado**: Durante operaciones en segundo plano
 
 ## 🚨 Tipos de Conexión
 

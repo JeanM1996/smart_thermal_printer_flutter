@@ -7,7 +7,7 @@ import IOKit.usb.IOUSBLib
 import Foundation
 import CoreFoundation
 
-public class FlutterThermalPrinterPlugin: NSObject, FlutterPlugin  , FlutterStreamHandler{
+public class SmartThermalPrinterFlutterPlugin: NSObject, FlutterPlugin  , FlutterStreamHandler{
     
     private var eventSink: FlutterEventSink?
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
@@ -21,10 +21,10 @@ public class FlutterThermalPrinterPlugin: NSObject, FlutterPlugin  , FlutterStre
     }
     
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "flutter_thermal_printer", binaryMessenger: registrar.messenger)
-        let instance = FlutterThermalPrinterPlugin()
+        let channel = FlutterMethodChannel(name: "smart_thermal_printer_flutter", binaryMessenger: registrar.messenger)
+        let instance = SmartThermalPrinterFlutterPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
-        let eventChannel =  FlutterEventChannel(name: "flutter_thermal_printer/events", binaryMessenger: registrar.messenger)
+        let eventChannel =  FlutterEventChannel(name: "smart_thermal_printer_flutter/events", binaryMessenger: registrar.messenger)
         eventChannel.setStreamHandler(instance)
     }
     

@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 # Project-level configuration.
-set(PROJECT_NAME "flutter_thermal_printer")
+set(PROJECT_NAME "smart_thermal_printer_flutter")
 project(${PROJECT_NAME} LANGUAGES CXX)
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
@@ -14,19 +14,19 @@ cmake_policy(VERSION 3.14...3.25)
 
 # This value is used when generating builds using this plugin, so it must
 # not be changed
-set(PLUGIN_NAME "flutter_thermal_printer_plugin")
+set(PLUGIN_NAME "smart_thermal_printer_flutter_plugin")
 
 # Any new source files that you add to the plugin should be added here.
 list(APPEND PLUGIN_SOURCES
-  "flutter_thermal_printer_plugin.cpp"
-  "flutter_thermal_printer_plugin.h"
+  "smart_thermal_printer_flutter_plugin.cpp"
+  "smart_thermal_printer_flutter_plugin.h"
 )
 
 # Define the plugin library target. Its name must not be changed (see comment
 # on PLUGIN_NAME above).
 add_library(${PLUGIN_NAME} SHARED
-  "include/flutter_thermal_printer/flutter_thermal_printer_plugin_c_api.h"
-  "flutter_thermal_printer_plugin_c_api.cpp"
+  "include/smart_thermal_printer_flutter/smart_thermal_printer_flutter_plugin_c_api.h"
+  "smart_thermal_printer_flutter_plugin_c_api.cpp"
   ${PLUGIN_SOURCES}
 )
 
