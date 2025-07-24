@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../connection/printer_connection_manager.dart';
+import '../utils/printer.dart';
+import 'printer_selection_modal.dart';
 
 /// Widget de botón para impresión rápida con conexión persistente
 class SmartThermalPrintButton extends StatefulWidget {
@@ -37,6 +39,15 @@ class SmartThermalPrintButton extends StatefulWidget {
   /// Altura del botón
   final double? height;
 
+  /// Auto-abrir modal de selección de impresora si no hay conexión
+  final bool autoOpenPrinterSelection;
+
+  /// Tipos de conexión a buscar en el modal automático
+  final List<ConnectionType> connectionTypes;
+
+  /// Callback cuando se conecta una impresora desde el modal
+  final Function(Printer printer)? onPrinterConnected;
+
   const SmartThermalPrintButton({
     super.key,
     this.printData,
@@ -50,6 +61,9 @@ class SmartThermalPrintButton extends StatefulWidget {
     this.longData = false,
     this.showConnectedPrinter = true,
     this.height,
+    this.autoOpenPrinterSelection = true,
+    this.connectionTypes = const [ConnectionType.USB, ConnectionType.BLE],
+    this.onPrinterConnected,
   }) : assert(printData != null || generatePrintData != null,
             'Debe proporcionar printData o generatePrintData');
 
@@ -82,19 +96,61 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
   }
 
   Future<void> _handlePrint() async {
+    // Si no hay impresora conectada, abrir modal de selección automáticamente
     if (!_connectionManager.isConnected) {
-      widget.onPrintFailed?.call('No hay impresora conectada');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No hay impresora conectada'),
-            backgroundColor: Colors.red,
-          ),
-        );
+      if (widget.autoOpenPrinterSelection) {
+        await _showPrinterSelectionModal();
+        // Después del modal, verificar si se conectó una impresora
+        if (!_connectionManager.isConnected) {
+          return; // El usuario canceló o no se conectó
+        }
+        // Si se conectó, continuar con la impresión
+      } else {
+        // Comportamiento original: mostrar error
+        widget.onPrintFailed?.call('No hay impresora conectada');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('No hay impresora conectada'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
       }
-      return;
     }
 
+    // Proceder con la impresión
+    await _performPrint();
+  }
+
+  /// Mostrar modal de selección de impresora
+  Future<void> _showPrinterSelectionModal() async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+          ),
+        ),
+        child: PrinterSelectionModal(
+          connectionTypes: widget.connectionTypes,
+          onPrinterConnected: (printer) {
+            widget.onPrinterConnected?.call(printer);
+          },
+          onConnectionFailed: widget.onPrintFailed,
+        ),
+      ),
+    );
+  }
+
+  /// Realizar la impresión real
+  Future<void> _performPrint() async {
     setState(() {
       _isPrinting = true;
     });
