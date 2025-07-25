@@ -113,7 +113,7 @@ public class UsbPrinter implements EventChannel.StreamHandler {
 
     private static PendingIntent mPermissionIntent;
 
-    UsbPrinter(Context context) {
+    public UsbPrinter(Context context) {
         UsbPrinter.context = context;
         mPermissionIntent = PendingIntent.getActivity(context, 0, new Intent(ACTION_USB_PERMISSION),
                 PendingIntent.FLAG_IMMUTABLE);

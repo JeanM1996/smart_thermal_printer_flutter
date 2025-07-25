@@ -22,7 +22,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example."
+    namespace "com.example.smart_thermal_printer_flutter_example"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 

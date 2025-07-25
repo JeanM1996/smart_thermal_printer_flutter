@@ -1,0 +1,297 @@
+-- Merging decision tree log ---
+application
+INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:21:5-57:19
+INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml
+MERGED from [androidx.window:window:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/a879239e1cee8404e41ca7c9afe9d5ce/transformed/jetified-window-1.2.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.window:window:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/a879239e1cee8404e41ca7c9afe9d5ce/transformed/jetified-window-1.2.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:28:5-89
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/325ad216c937c5638aba0b8b6099c231/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/325ad216c937c5638aba0b8b6099c231/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/7bc6e8a1841e9e1430d1427f31c09cfe/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/7bc6e8a1841e9e1430d1427f31c09cfe/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f35692c38913b86a247aa4a3891c86d5/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f35692c38913b86a247aa4a3891c86d5/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+	android:extractNativeLibs
+		INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
+	android:name
+		INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml
+manifest
+ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:1:1-58:12
+MERGED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:1:1-58:12
+INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+MERGED from [:flutter_blue_plus_android] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/flutter_blue_plus_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-11:12
+MERGED from [:integration_test] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/integration_test/intermediates/merged_manifest/debug/AndroidManifest.xml:7:1-12:12
+MERGED from [:path_provider_android] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/path_provider_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:smart_thermal_printer_flutter] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/smart_thermal_printer_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-13:12
+MERGED from [androidx.test:rules:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/85233ba68f739e4664eb0d869339003d/transformed/rules-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.test.espresso:espresso-core:3.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/80156fe3128f4a16373627c7da01de6d/transformed/espresso-core-3.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.test:runner:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/b359414fa2aa63289ecdd68a3a230dc7/transformed/runner-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.fragment:fragment:1.7.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/4bb6a3d58b0e13ae8dcf821dd80473db/transformed/fragment-1.7.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.window:window:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/a879239e1cee8404e41ca7c9afe9d5ce/transformed/jetified-window-1.2.0/AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.window:window-java:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/4c9eb4766381b9c133e213fef916228c/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:17:1-21:12
+MERGED from [androidx.activity:activity:1.8.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/7c795e0236f391697051033d2c4cd2c2/transformed/jetified-activity-1.8.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1b77f753d5006d9aa22dc5807f49f050/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/dd4c46adcef27c0ccee1843db5401b24/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/8742fe7bc5d9870a261926160dbcbd06/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/b3fc812492b1d296d53a657f420a0636/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/45357d37fd9da74e2a0f2178b05de9ee/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/2694e64791fbd8846692139137764388/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/6cdea326d7875ef69d2bb68176a6822e/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/0489765380146c22da43ba1ceea3258a/transformed/jetified-core-ktx-1.13.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/fdf7aa0088f4b0d928e25e42cbdde022/transformed/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/35842fe92a02d2e1a61ac737047839e1/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/325ad216c937c5638aba0b8b6099c231/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/0e1c59f33c9d88e64b91ee1e70c61151/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/7bc6e8a1841e9e1430d1427f31c09cfe/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/bfdac41f0907d7023d0f5c44d5aa046b/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.test:monitor:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/6c8b45f37f7700752136197b688a8960/transformed/monitor-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/ded92160a20a5d9b98d11b810d0e503b/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f35692c38913b86a247aa4a3891c86d5/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/5c62e8e537935b9d8f9fd436100c6b18/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.window.extensions.core:core:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/2e68ac6ad05b297c459e297bca1bed90/transformed/jetified-core-1.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/209c21c8219bb567572ce067035cf71f/transformed/jetified-relinker-1.4.5/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.test.espresso:espresso-idling-resource:3.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/d6fdc3ef1c7b20cfd070388cbfb24996/transformed/espresso-idling-resource-3.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/78b66825139b89aa52a78bb7a6374a00/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:2:1-7:12
+	package
+		INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:1:11-69
+uses-feature#android.hardware.bluetooth_le
+ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:4:5-91
+	android:required
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:4:64-88
+	android:name
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:4:19-63
+uses-permission#android.permission.BLUETOOTH_SCAN
+ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:8:5-9:58
+	android:usesPermissionFlags
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:9:9-55
+	android:name
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:8:22-70
+uses-permission#android.permission.BLUETOOTH_CONNECT
+ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:10:5-76
+	android:name
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:10:22-73
+uses-permission#android.permission.BLUETOOTH
+ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:13:5-95
+	android:maxSdkVersion
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:13:66-92
+	android:name
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:13:22-65
+uses-permission#android.permission.BLUETOOTH_ADMIN
+ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:14:5-101
+	android:maxSdkVersion
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:14:72-98
+	android:name
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:14:22-71
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:15:5-16:38
+	android:maxSdkVersion
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:16:9-35
+	android:name
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:15:22-76
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:19:5-20:38
+	android:maxSdkVersion
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:20:9-35
+	android:name
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/main/AndroidManifest.xml:19:22-78
+uses-permission#android.permission.INTERNET
+ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml:6:5-66
+	android:name
+		ADDED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml:6:22-64
+uses-sdk
+INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml
+INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml
+MERGED from [:flutter_blue_plus_android] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/flutter_blue_plus_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-44
+MERGED from [:flutter_blue_plus_android] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/flutter_blue_plus_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-44
+MERGED from [:integration_test] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/integration_test/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-44
+MERGED from [:integration_test] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/integration_test/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-44
+MERGED from [:path_provider_android] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/path_provider_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:path_provider_android] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/path_provider_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:smart_thermal_printer_flutter] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/smart_thermal_printer_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:smart_thermal_printer_flutter] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/smart_thermal_printer_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [androidx.test:rules:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/85233ba68f739e4664eb0d869339003d/transformed/rules-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test:rules:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/85233ba68f739e4664eb0d869339003d/transformed/rules-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test.espresso:espresso-core:3.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/80156fe3128f4a16373627c7da01de6d/transformed/espresso-core-3.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test.espresso:espresso-core:3.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/80156fe3128f4a16373627c7da01de6d/transformed/espresso-core-3.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test:runner:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/b359414fa2aa63289ecdd68a3a230dc7/transformed/runner-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test:runner:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/b359414fa2aa63289ecdd68a3a230dc7/transformed/runner-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.7.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/4bb6a3d58b0e13ae8dcf821dd80473db/transformed/fragment-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment:1.7.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/4bb6a3d58b0e13ae8dcf821dd80473db/transformed/fragment-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.window:window:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/a879239e1cee8404e41ca7c9afe9d5ce/transformed/jetified-window-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/a879239e1cee8404e41ca7c9afe9d5ce/transformed/jetified-window-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window-java:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/4c9eb4766381b9c133e213fef916228c/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:19:5-44
+MERGED from [androidx.window:window-java:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/4c9eb4766381b9c133e213fef916228c/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:19:5-44
+MERGED from [androidx.activity:activity:1.8.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/7c795e0236f391697051033d2c4cd2c2/transformed/jetified-activity-1.8.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.8.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/7c795e0236f391697051033d2c4cd2c2/transformed/jetified-activity-1.8.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1b77f753d5006d9aa22dc5807f49f050/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1b77f753d5006d9aa22dc5807f49f050/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/dd4c46adcef27c0ccee1843db5401b24/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/dd4c46adcef27c0ccee1843db5401b24/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/8742fe7bc5d9870a261926160dbcbd06/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/8742fe7bc5d9870a261926160dbcbd06/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/b3fc812492b1d296d53a657f420a0636/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/b3fc812492b1d296d53a657f420a0636/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/45357d37fd9da74e2a0f2178b05de9ee/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/45357d37fd9da74e2a0f2178b05de9ee/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/2694e64791fbd8846692139137764388/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/2694e64791fbd8846692139137764388/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/6cdea326d7875ef69d2bb68176a6822e/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/6cdea326d7875ef69d2bb68176a6822e/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/0489765380146c22da43ba1ceea3258a/transformed/jetified-core-ktx-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/0489765380146c22da43ba1ceea3258a/transformed/jetified-core-ktx-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/fdf7aa0088f4b0d928e25e42cbdde022/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/fdf7aa0088f4b0d928e25e42cbdde022/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/35842fe92a02d2e1a61ac737047839e1/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/35842fe92a02d2e1a61ac737047839e1/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/325ad216c937c5638aba0b8b6099c231/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/325ad216c937c5638aba0b8b6099c231/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/0e1c59f33c9d88e64b91ee1e70c61151/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/0e1c59f33c9d88e64b91ee1e70c61151/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/7bc6e8a1841e9e1430d1427f31c09cfe/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/7bc6e8a1841e9e1430d1427f31c09cfe/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/bfdac41f0907d7023d0f5c44d5aa046b/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/bfdac41f0907d7023d0f5c44d5aa046b/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.test:monitor:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/6c8b45f37f7700752136197b688a8960/transformed/monitor-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test:monitor:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/6c8b45f37f7700752136197b688a8960/transformed/monitor-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/ded92160a20a5d9b98d11b810d0e503b/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/ded92160a20a5d9b98d11b810d0e503b/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f35692c38913b86a247aa4a3891c86d5/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f35692c38913b86a247aa4a3891c86d5/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/5c62e8e537935b9d8f9fd436100c6b18/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/5c62e8e537935b9d8f9fd436100c6b18/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window.extensions.core:core:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/2e68ac6ad05b297c459e297bca1bed90/transformed/jetified-core-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.window.extensions.core:core:1.0.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/2e68ac6ad05b297c459e297bca1bed90/transformed/jetified-core-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/209c21c8219bb567572ce067035cf71f/transformed/jetified-relinker-1.4.5/AndroidManifest.xml:5:5-43
+MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/209c21c8219bb567572ce067035cf71f/transformed/jetified-relinker-1.4.5/AndroidManifest.xml:5:5-43
+MERGED from [androidx.test.espresso:espresso-idling-resource:3.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/d6fdc3ef1c7b20cfd070388cbfb24996/transformed/espresso-idling-resource-3.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.test.espresso:espresso-idling-resource:3.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/d6fdc3ef1c7b20cfd070388cbfb24996/transformed/espresso-idling-resource-3.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/78b66825139b89aa52a78bb7a6374a00/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/78b66825139b89aa52a78bb7a6374a00/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
+	android:targetSdkVersion
+		INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/android/app/src/debug/AndroidManifest.xml
+uses-feature#android.hardware.usb.host
+ADDED from [:smart_thermal_printer_flutter] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/smart_thermal_printer_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:7:5-9:36
+	android:required
+		ADDED from [:smart_thermal_printer_flutter] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/smart_thermal_printer_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:9:9-33
+	android:name
+		ADDED from [:smart_thermal_printer_flutter] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/smart_thermal_printer_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:8:9-49
+uses-permission#android.permission.USB_PERMISSION
+ADDED from [:smart_thermal_printer_flutter] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/smart_thermal_printer_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-73
+	android:name
+		ADDED from [:smart_thermal_printer_flutter] /Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/smart_thermal_printer_flutter/intermediates/merged_manifest/debug/AndroidManifest.xml:11:22-70
+uses-library#androidx.window.extensions
+ADDED from [androidx.window:window:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/a879239e1cee8404e41ca7c9afe9d5ce/transformed/jetified-window-1.2.0/AndroidManifest.xml:23:9-25:40
+	android:required
+		ADDED from [androidx.window:window:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/a879239e1cee8404e41ca7c9afe9d5ce/transformed/jetified-window-1.2.0/AndroidManifest.xml:25:13-37
+	android:name
+		ADDED from [androidx.window:window:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/a879239e1cee8404e41ca7c9afe9d5ce/transformed/jetified-window-1.2.0/AndroidManifest.xml:24:13-54
+uses-library#androidx.window.sidecar
+ADDED from [androidx.window:window:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/a879239e1cee8404e41ca7c9afe9d5ce/transformed/jetified-window-1.2.0/AndroidManifest.xml:26:9-28:40
+	android:required
+		ADDED from [androidx.window:window:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/a879239e1cee8404e41ca7c9afe9d5ce/transformed/jetified-window-1.2.0/AndroidManifest.xml:28:13-37
+	android:name
+		ADDED from [androidx.window:window:1.2.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/a879239e1cee8404e41ca7c9afe9d5ce/transformed/jetified-window-1.2.0/AndroidManifest.xml:27:13-51
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+permission#com.example.smart_thermal_printer_flutter_example.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+uses-permission#com.example.smart_thermal_printer_flutter_example.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/1ca060f3916ca1d226b931cef53a99a5/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/325ad216c937c5638aba0b8b6099c231/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/7bc6e8a1841e9e1430d1427f31c09cfe/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/7bc6e8a1841e9e1430d1427f31c09cfe/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/325ad216c937c5638aba0b8b6099c231/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/325ad216c937c5638aba0b8b6099c231/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/325ad216c937c5638aba0b8b6099c231/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/325ad216c937c5638aba0b8b6099c231/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:25:13-67
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/325ad216c937c5638aba0b8b6099c231/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/325ad216c937c5638aba0b8b6099c231/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/325ad216c937c5638aba0b8b6099c231/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/jeanpaulmosqueraarevalo/.gradle/caches/transforms-3/f46bfef6545f0c9e6d60b21e91921324/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:25-92

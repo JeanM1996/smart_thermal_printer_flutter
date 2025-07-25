@@ -1,0 +1,18 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.smart_thermal_printer_flutter" >
+4
+5    <uses-sdk android:minSdkVersion="19" />
+6
+7    <uses-feature
+7-->/Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/android/src/main/AndroidManifest.xml:3:3-85
+8        android:name="android.hardware.usb.host"
+8-->/Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/android/src/main/AndroidManifest.xml:3:17-57
+9        android:required="false" />
+9-->/Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/android/src/main/AndroidManifest.xml:3:58-82
+10
+11    <uses-permission android:name="android.permission.USB_PERMISSION" />
+11-->/Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/android/src/main/AndroidManifest.xml:4:3-71
+11-->/Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/android/src/main/AndroidManifest.xml:4:20-68
+12
+13</manifest>

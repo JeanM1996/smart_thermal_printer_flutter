@@ -1,0 +1,16 @@
+#Thu Jul 24 19:10:59 ECT 2025
+base.0=/Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/app/intermediates/dex/debug/mergeExtDexDebug/classes.dex
+base.1=/Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/app/intermediates/dex/debug/mergeLibDexDebug/0/classes.dex
+base.2=/Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/app/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
+base.3=/Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/app/intermediates/dex/debug/mergeProjectDexDebug/1/classes.dex
+base.4=/Users/jeanpaulmosqueraarevalo/3A/smart_thermal_printer/example/build/app/intermediates/dex/debug/mergeProjectDexDebug/8/classes.dex
+path.0=classes.dex
+path.1=0/classes.dex
+path.2=0/classes.dex
+path.3=1/classes.dex
+path.4=8/classes.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex
+renamed.2=classes3.dex
+renamed.3=classes4.dex
+renamed.4=classes5.dex
