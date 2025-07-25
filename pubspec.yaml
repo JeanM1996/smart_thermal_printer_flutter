@@ -1,6 +1,6 @@
 name: smart_thermal_printer_flutter
 description: "Advanced Flutter plugin for thermal printing with smart connection management and UI widgets."
-version: 2.3.1
+version: 2.3.2
 homepage: "https://github.com/jeanpaulmosqueraarevalo/smart_thermal_printer_flutter"
 repository: "https://github.com/jeanpaulmosqueraarevalo/smart_thermal_printer_flutter"
 

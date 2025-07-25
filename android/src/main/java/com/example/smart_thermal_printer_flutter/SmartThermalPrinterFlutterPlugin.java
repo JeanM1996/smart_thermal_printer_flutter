@@ -24,7 +24,7 @@ public class SmartThermalPrinterFlutterPlugin implements FlutterPlugin, MethodCa
     private MethodChannel channel;
     private EventChannel eventChannel;
     private Context context;
-    private UsbPrinter usbPrinter;
+    // private UsbPrinter usbPrinter;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -33,8 +33,8 @@ public class SmartThermalPrinterFlutterPlugin implements FlutterPlugin, MethodCa
                 "smart_thermal_printer_flutter/events");
         channel.setMethodCallHandler(this);
         context = flutterPluginBinding.getApplicationContext();
-        usbPrinter = new UsbPrinter(context);
-        eventChannel.setStreamHandler(usbPrinter);
+        // usbPrinter = new UsbPrinter(context);
+        // eventChannel.setStreamHandler(usbPrinter);
     }
 
     @Override
@@ -44,33 +44,36 @@ public class SmartThermalPrinterFlutterPlugin implements FlutterPlugin, MethodCa
                 result.success("Android " + android.os.Build.VERSION.RELEASE);
                 break;
             case "getUsbDevicesList":
-                result.success(usbPrinter.getUsbDevicesList());
+                // result.success(usbPrinter.getUsbDevicesList());
+                result.success(null);
                 break;
             case "connect": {
                 String vendorId = call.argument("vendorId");
                 String productId = call.argument("productId");
-                usbPrinter.connect(vendorId, productId);
+                // usbPrinter.connect(vendorId, productId);
                 result.success(false);
                 break;
             }
             case "disconnect": {
                 String vendorId = call.argument("vendorId");
                 String productId = call.argument("productId");
-                result.success(usbPrinter.disconnect(vendorId, productId));
+                // result.success(usbPrinter.disconnect(vendorId, productId));
+                result.success(false);
                 break;
             }
             case "printText": {
                 String vendorId = call.argument("vendorId");
                 String productId = call.argument("productId");
                 List<Integer> data = call.argument("data");
-                usbPrinter.printText(vendorId, productId, data);
+                // usbPrinter.printText(vendorId, productId, data);
                 result.success(true);
                 break;
             }
             case "isConnected": {
                 String vendorId = call.argument("vendorId");
                 String productId = call.argument("productId");
-                result.success(usbPrinter.isConnected(vendorId, productId));
+                // result.success(usbPrinter.isConnected(vendorId, productId));
+                result.success(false);
                 break;
             }
             default:
