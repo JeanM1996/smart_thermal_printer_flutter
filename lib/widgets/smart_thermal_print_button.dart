@@ -96,6 +96,19 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
   }
 
   Future<void> _handlePrint() async {
+    // Si está reconectando, esperar a que termine
+    if (_connectionManager.isReconnecting) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Esperando reconexión, intente nuevamente...'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+      return;
+    }
+
     // Si no hay impresora conectada, abrir modal de selección automáticamente
     if (!_connectionManager.isConnected) {
       if (widget.autoOpenPrinterSelection) {
@@ -273,6 +286,10 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
       return widget.printingText;
     }
 
+    if (_connectionManager.isReconnecting) {
+      return 'Reconectando...';
+    }
+
     if (isConnected) {
       return widget.buttonText;
     } else {
@@ -282,6 +299,17 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
 
   /// Obtiene el icono del botón según el estado de conexión
   Widget _getButtonIcon(bool isConnected) {
+    if (_connectionManager.isReconnecting) {
+      return const SizedBox(
+        width: 20,
+        height: 20,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        ),
+      );
+    }
+
     if (isConnected) {
       return widget.icon ?? const Icon(Icons.print);
     } else {
@@ -305,24 +333,38 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             margin: const EdgeInsets.only(bottom: 8),
             decoration: BoxDecoration(
-              color: Colors.green.shade50,
+              color: _connectionManager.isReconnecting
+                  ? Colors.orange.shade50
+                  : Colors.green.shade50,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.green.shade200),
+              border: Border.all(
+                color: _connectionManager.isReconnecting
+                    ? Colors.orange.shade200
+                    : Colors.green.shade200,
+              ),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  Icons.check_circle,
+                  _connectionManager.isReconnecting
+                      ? Icons.sync
+                      : Icons.check_circle,
                   size: 16,
-                  color: Colors.green.shade600,
+                  color: _connectionManager.isReconnecting
+                      ? Colors.orange.shade600
+                      : Colors.green.shade600,
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  'Conectado: ${connectedPrinter.name ?? 'Impresora'}',
+                  _connectionManager.isReconnecting
+                      ? 'Reconectando...'
+                      : 'Conectado: ${connectedPrinter.name ?? 'Impresora'}',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.green.shade800,
+                    color: _connectionManager.isReconnecting
+                        ? Colors.orange.shade800
+                        : Colors.green.shade800,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -334,10 +376,14 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
         SizedBox(
           height: widget.height ?? 50,
           child: ElevatedButton.icon(
-            onPressed: !_isPrinting ? _handlePrint : null,
+            onPressed: (!_isPrinting && !_connectionManager.isReconnecting)
+                ? _handlePrint
+                : null,
             style: widget.buttonStyle ??
                 ElevatedButton.styleFrom(
-                  backgroundColor: isConnected ? Colors.blue : Colors.orange,
+                  backgroundColor: _connectionManager.isReconnecting
+                      ? Colors.orange
+                      : (isConnected ? Colors.blue : Colors.orange),
                   foregroundColor: Colors.white,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
