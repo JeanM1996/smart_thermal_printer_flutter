@@ -211,6 +211,28 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
     }
   }
 
+  /// Obtiene el texto del botón según el estado de conexión
+  String _getButtonText(bool isConnected) {
+    if (_isPrinting) {
+      return widget.printingText;
+    }
+
+    if (isConnected) {
+      return widget.buttonText;
+    } else {
+      return 'Seleccionar Impresora';
+    }
+  }
+
+  /// Obtiene el icono del botón según el estado de conexión
+  Widget _getButtonIcon(bool isConnected) {
+    if (isConnected) {
+      return widget.icon ?? const Icon(Icons.print);
+    } else {
+      return const Icon(Icons.settings_bluetooth);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isConnected = _connectionManager.isConnected;
@@ -256,10 +278,10 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
         SizedBox(
           height: widget.height ?? 50,
           child: ElevatedButton.icon(
-            onPressed: isConnected && !_isPrinting ? _handlePrint : null,
+            onPressed: !_isPrinting ? _handlePrint : null,
             style: widget.buttonStyle ??
                 ElevatedButton.styleFrom(
-                  backgroundColor: isConnected ? Colors.blue : Colors.grey,
+                  backgroundColor: isConnected ? Colors.blue : Colors.orange,
                   foregroundColor: Colors.white,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -276,9 +298,9 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   )
-                : widget.icon ?? const Icon(Icons.print),
+                : _getButtonIcon(isConnected),
             label: Text(
-              _isPrinting ? widget.printingText : widget.buttonText,
+              _getButtonText(isConnected),
               style: const TextStyle(fontSize: 16),
             ),
           ),
