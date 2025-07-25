@@ -1,6 +1,4 @@
-group 'com.example.smart_therm    compileSdkVersion 33
-
-    compileOptions {printer_flutter'
+group 'com.example.smart_thermal_printer_flutter'
 version '1.0'
 
 buildscript {
