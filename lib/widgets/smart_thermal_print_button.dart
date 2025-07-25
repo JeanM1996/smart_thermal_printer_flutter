@@ -237,6 +237,9 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
       );
 
       if (success) {
+        // Realizar disconnect y reconnect para verificar errores de la impresora
+        await _performDisconnectReconnect();
+
         widget.onPrintCompleted?.call();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -277,6 +280,46 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
           _isPrinting = false;
         });
       }
+    }
+  }
+
+  /// Realizar desconexión y reconexión para verificar errores de la impresora
+  Future<void> _performDisconnectReconnect() async {
+    final currentPrinter = _connectionManager.connectedPrinter;
+    if (currentPrinter == null) return;
+
+    try {
+      debugPrint(
+          'Realizando disconnect/reconnect para verificar errores de impresora');
+
+      // Desconectar
+      await _connectionManager.disconnect();
+
+      // Esperar un momento antes de reconectar
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Reconectar
+      final reconnected =
+          await _connectionManager.connectToPrinter(currentPrinter);
+
+      if (!reconnected) {
+        debugPrint(
+            'Advertencia: No se pudo reconectar después de la impresión');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content:
+                  Text('Advertencia: Reconexión falló después de impresión'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+      } else {
+        debugPrint('Reconexión exitosa después de la impresión');
+      }
+    } catch (e) {
+      debugPrint('Error durante disconnect/reconnect: $e');
+      // No mostramos error aquí ya que la impresión fue exitosa
     }
   }
 
