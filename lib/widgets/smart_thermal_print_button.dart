@@ -99,12 +99,34 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
     // Si no hay impresora conectada, abrir modal de selección automáticamente
     if (!_connectionManager.isConnected) {
       if (widget.autoOpenPrinterSelection) {
-        await _showPrinterSelectionModal();
-        // Después del modal, verificar si se conectó una impresora
-        if (!_connectionManager.isConnected) {
+        bool printerConnected = false;
+
+        final selectedPrinter = await _showPrinterSelectionModal();
+
+        // Verificar si se conectó una impresora
+        if (selectedPrinter != null) {
+          // Esperar un poco más para que el estado se propague completamente
+          await Future.delayed(const Duration(milliseconds: 1000));
+          printerConnected = _connectionManager.isConnected;
+
+          // Forzar actualización de la UI
+          if (mounted) {
+            setState(() {});
+          }
+        }
+
+        if (!printerConnected) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('No se pudo conectar a la impresora'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
           return; // El usuario canceló o no se conectó
         }
-        // Si se conectó, continuar con la impresión
+        // Si se conectó, continuar con la impresión automáticamente
       } else {
         // Comportamiento original: mostrar error
         widget.onPrintFailed?.call('No hay impresora conectada');
@@ -125,11 +147,12 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
   }
 
   /// Mostrar modal de selección de impresora
-  Future<void> _showPrinterSelectionModal() async {
-    await showModalBottomSheet(
+  Future<Printer?> _showPrinterSelectionModal() async {
+    final result = await showModalBottomSheet<Printer>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      isDismissible: true,
       builder: (context) => Container(
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -142,15 +165,39 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
           connectionTypes: widget.connectionTypes,
           onPrinterConnected: (printer) {
             widget.onPrinterConnected?.call(printer);
+            // Cerrar modal y devolver el printer conectado
+            Navigator.of(context).pop(printer);
           },
           onConnectionFailed: widget.onPrintFailed,
         ),
       ),
     );
+
+    // Si se seleccionó una impresora, forzar actualización del estado
+    if (result != null && mounted) {
+      setState(() {});
+    }
+
+    return result;
   }
 
   /// Realizar la impresión real
   Future<void> _performPrint() async {
+    // Verificar nuevamente la conexión antes de imprimir
+    if (!_connectionManager.isConnected) {
+      const error = 'No hay impresora conectada al momento de imprimir';
+      widget.onPrintFailed?.call(error);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(error),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return;
+    }
+
     setState(() {
       _isPrinting = true;
     });
@@ -164,6 +211,13 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
         dataToprint = await widget.generatePrintData!();
       }
 
+      if (dataToprint.isEmpty) {
+        throw Exception('No hay datos para imprimir');
+      }
+
+      debugPrint(
+          'Iniciando impresión con ${dataToprint.length} bytes de datos');
+
       final success = await _connectionManager.print(
         dataToprint,
         longData: widget.longData,
@@ -174,30 +228,32 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Impresión completada'),
+              content: Text('Impresión completada exitosamente'),
               backgroundColor: Colors.green,
             ),
           );
         }
       } else {
-        final error =
-            _connectionManager.connectionError ?? 'Error de impresión';
+        final error = _connectionManager.connectionError ??
+            'Error desconocido de impresión';
         widget.onPrintFailed?.call(error);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Error: $error'),
+              content: Text('Error de impresión: $error'),
               backgroundColor: Colors.red,
             ),
           );
         }
       }
     } catch (e) {
-      widget.onPrintFailed?.call(e.toString());
+      final errorMessage = 'Error durante la impresión: $e';
+      debugPrint(errorMessage);
+      widget.onPrintFailed?.call(errorMessage);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: $e'),
+            content: Text(errorMessage),
             backgroundColor: Colors.red,
           ),
         );

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 import '../Others/other_printers_manager.dart';
 import '../Windows/window_printer_manager.dart';
 import '../smart_thermal_printer_flutter.dart';
@@ -60,6 +62,9 @@ class PrinterConnectionManager {
     _connectionError = null;
     _notifyListeners();
 
+    debugPrint(
+        'Intentando conectar a impresora: ${printer.name} (${printer.address})');
+
     try {
       bool success;
       if (Platform.isWindows) {
@@ -72,8 +77,10 @@ class PrinterConnectionManager {
         _connectedPrinter = printer;
         _startConnectionMonitoring();
         _connectionError = null;
+        debugPrint('Conexión exitosa a: ${printer.name}');
       } else {
         _connectionError = 'Failed to connect to printer';
+        debugPrint('Error: Failed to connect to printer');
       }
 
       _isConnecting = false;
@@ -81,6 +88,7 @@ class PrinterConnectionManager {
       return success;
     } catch (e) {
       _connectionError = 'Error connecting to printer: $e';
+      debugPrint('Error conectando a impresora: $e');
       _isConnecting = false;
       _notifyListeners();
       return false;
@@ -112,9 +120,13 @@ class PrinterConnectionManager {
   Future<bool> print(List<int> bytes, {bool longData = false}) async {
     if (_connectedPrinter == null) {
       _connectionError = 'No printer connected';
+      debugPrint('Error: No printer connected');
       _notifyListeners();
       return false;
     }
+
+    debugPrint(
+        'Iniciando impresión con ${bytes.length} bytes, longData: $longData');
 
     try {
       await SmartThermalPrinterFlutter.instance.printData(
@@ -122,9 +134,11 @@ class PrinterConnectionManager {
         bytes,
         longData: longData,
       );
+      debugPrint('Impresión completada exitosamente');
       return true;
     } catch (e) {
       _connectionError = 'Print error: $e';
+      debugPrint('Error de impresión: $e');
       _notifyListeners();
       return false;
     }

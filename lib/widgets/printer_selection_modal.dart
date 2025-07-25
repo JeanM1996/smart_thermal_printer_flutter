@@ -167,15 +167,26 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal> {
       final success = await _connectionManager.connectToPrinter(printer);
 
       if (success) {
+        // Esperar un poco para asegurar que la conexión se establezca
+        await Future.delayed(const Duration(milliseconds: 300));
+
         widget.onPrinterConnected?.call(printer);
+
         if (mounted) {
-          Navigator.of(context).pop(); // Cerrar modal
+          // Mostrar mensaje de éxito
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Conectado a ${printer.name}'),
               backgroundColor: Colors.green,
+              duration: const Duration(seconds: 1),
             ),
           );
+
+          // Esperar un poco más antes de cerrar para que el usuario vea el mensaje
+          await Future.delayed(const Duration(milliseconds: 500));
+
+          // Cerrar modal después de mostrar el mensaje
+          Navigator.of(context).pop(printer);
         }
       } else {
         final error = _connectionManager.connectionError ?? 'Error de conexión';
@@ -191,6 +202,14 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal> {
       }
     } catch (e) {
       widget.onConnectionFailed?.call(e.toString());
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error de conexión: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() {
