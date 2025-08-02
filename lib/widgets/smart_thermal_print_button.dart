@@ -503,8 +503,6 @@ class DisconnectPrinterButton extends StatefulWidget {
   /// Color del botón
   final Color? color;
 
-  final String text;
-
   /// Callback cuando se desconecta
   final Function()? onDisconnected;
 
@@ -513,7 +511,6 @@ class DisconnectPrinterButton extends StatefulWidget {
     this.size = 36,
     this.color,
     this.onDisconnected,
-    this.text = 'Desconectar',
   });
 
   @override
@@ -564,21 +561,10 @@ class _DisconnectPrinterButtonState extends State<DisconnectPrinterButton> {
 
     return IconButton(
       onPressed: _handleDisconnect,
-      icon: Row(
-        children: [
-          Text(
-            widget.text,
-            style: TextStyle(
-              fontSize: widget.size * 0.3,
-              color: widget.color ?? Colors.red,
-            ),
-          ),
-          Icon(
-            Icons.link_off,
-            size: widget.size * 0.6,
-            color: widget.color ?? Colors.red,
-          ),
-        ],
+      icon: Icon(
+        Icons.link_off,
+        size: widget.size * 0.9,
+        color: widget.color ?? Colors.red,
       ),
       style: IconButton.styleFrom(
         backgroundColor: (widget.color ?? Colors.red).withValues(alpha: 0.1),
