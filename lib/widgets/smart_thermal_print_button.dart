@@ -48,6 +48,9 @@ class SmartThermalPrintButton extends StatefulWidget {
   /// Callback cuando se conecta una impresora desde el modal
   final Function(Printer printer)? onPrinterConnected;
 
+  //icoNColor
+  final Color? iconColor;
+
   const SmartThermalPrintButton({
     super.key,
     this.printData,
@@ -64,6 +67,7 @@ class SmartThermalPrintButton extends StatefulWidget {
     this.autoOpenPrinterSelection = true,
     this.connectionTypes = const [ConnectionType.USB, ConnectionType.BLE],
     this.onPrinterConnected,
+    this.iconColor,
   }) : assert(printData != null || generatePrintData != null,
             'Debe proporcionar printData o generatePrintData');
 
@@ -354,9 +358,15 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
     }
 
     if (isConnected) {
-      return widget.icon ?? const Icon(Icons.print);
+      return widget.icon != null
+          ? widget.icon!
+          : (widget.iconColor == null
+              ? const Icon(Icons.print)
+              : Icon(Icons.print, color: widget.iconColor));
     } else {
-      return const Icon(Icons.settings_bluetooth);
+      return widget.iconColor == null
+          ? const Icon(Icons.settings_bluetooth)
+          : Icon(Icons.settings_bluetooth, color: widget.iconColor);
     }
   }
 
@@ -372,83 +382,113 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
         if (widget.showConnectedPrinter &&
             isConnected &&
             connectedPrinter != null)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            margin: const EdgeInsets.only(bottom: 8),
-            decoration: BoxDecoration(
-              color: _connectionManager.isReconnecting
-                  ? Colors.orange.shade50
-                  : Colors.green.shade50,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: _connectionManager.isReconnecting
-                    ? Colors.orange.shade200
-                    : Colors.green.shade200,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  _connectionManager.isReconnecting
-                      ? Icons.sync
-                      : Icons.check_circle,
-                  size: 16,
-                  color: _connectionManager.isReconnecting
-                      ? Colors.orange.shade600
-                      : Colors.green.shade600,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  _connectionManager.isReconnecting
-                      ? 'Reconectando...'
-                      : 'Conectado: ${connectedPrinter.name ?? 'Impresora'}',
-                  style: TextStyle(
-                    fontSize: 12,
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
                     color: _connectionManager.isReconnecting
-                        ? Colors.orange.shade800
-                        : Colors.green.shade800,
-                    fontWeight: FontWeight.w500,
+                        ? Colors.orange.shade50
+                        : Colors.green.shade50,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: _connectionManager.isReconnecting
+                          ? Colors.orange.shade200
+                          : Colors.green.shade200,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        _connectionManager.isReconnecting
+                            ? Icons.sync
+                            : Icons.check_circle,
+                        size: 16,
+                        color: _connectionManager.isReconnecting
+                            ? Colors.orange.shade600
+                            : Colors.green.shade600,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        _connectionManager.isReconnecting
+                            ? 'Reconectando...'
+                            : 'Conectado: ${connectedPrinter.name ?? 'Impresora'}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: _connectionManager.isReconnecting
+                              ? Colors.orange.shade800
+                              : Colors.green.shade800,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 4),
+              if (_connectionManager.isReconnecting)
+                Expanded(
+                  child: DisconnectPrinterButton(
+                    size: 15,
+                    color: const Color(0xFF23508F),
+                    onDisconnected: () {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Impresora desconectada'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                )
+            ],
           ),
 
         // Botón de impresión
-        SizedBox(
-          height: widget.height ?? 50,
-          child: ElevatedButton.icon(
-            onPressed: (!_isPrinting && !_connectionManager.isReconnecting)
-                ? _handlePrint
-                : null,
-            style: widget.buttonStyle ??
-                ElevatedButton.styleFrom(
-                  backgroundColor: _connectionManager.isReconnecting
-                      ? Colors.orange
-                      : (isConnected ? Colors.blue : Colors.orange),
-                  foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-            icon: _isPrinting
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        Row(
+          children: [
+            SizedBox(
+              height: widget.height ?? 50,
+              child: ElevatedButton.icon(
+                onPressed: (!_isPrinting && !_connectionManager.isReconnecting)
+                    ? _handlePrint
+                    : null,
+                style: widget.buttonStyle ??
+                    ElevatedButton.styleFrom(
+                      backgroundColor: _connectionManager.isReconnecting
+                          ? Colors.orange
+                          : (isConnected ? Colors.blue : Colors.orange),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
-                  )
-                : _getButtonIcon(isConnected),
-            label: Text(
-              _getButtonText(isConnected),
-              style: const TextStyle(fontSize: 16),
+                icon: _isPrinting
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : _getButtonIcon(isConnected),
+                label: Text(
+                  _getButtonText(isConnected),
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ],
     );
