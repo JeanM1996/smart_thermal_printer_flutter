@@ -485,6 +485,7 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Flexible(
                   child: Container(
@@ -545,47 +546,43 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
             ),
           ),
 
-        // Botón de impresión
-        Row(
-          children: [
-            SizedBox(
-              height: widget.height ?? 50,
-              child: ElevatedButton.icon(
-                onPressed:
-                    (!_isPrinting && !reconnecting) ? _handlePrint : null,
-                style: widget.buttonStyle ??
-                    ElevatedButton.styleFrom(
-                      backgroundColor: reconnecting || !isConnected
-                          ? t.fill(t.warning)
-                          : t.primary,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                icon: _isPrinting
-                    ? SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: widget.iconColor ?? Colors.white,
-                        ),
-                      )
-                    : _getButtonIcon(isConnected),
-                label: Text(
-                  _getButtonText(isConnected),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+        // Botón de impresión: ocupa todo el ancho disponible.
+        SizedBox(
+          width: double.infinity,
+          height: widget.height ?? 50,
+          child: ElevatedButton.icon(
+            onPressed: (!_isPrinting && !reconnecting) ? _handlePrint : null,
+            style: widget.buttonStyle ??
+                ElevatedButton.styleFrom(
+                  backgroundColor: reconnecting || !isConnected
+                      ? t.fill(t.warning)
+                      : t.primary,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
                   ),
                 ),
+            icon: _isPrinting
+                ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: widget.iconColor ?? Colors.white,
+                    ),
+                  )
+                : _getButtonIcon(isConnected),
+            label: Text(
+              _getButtonText(isConnected),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
               ),
             ),
-          ],
+          ),
         ),
       ],
     );
