@@ -18,7 +18,8 @@ class FlutterThermalPrinterNetwork {
     _timeout = timeout;
   }
 
-  Future<NetworkPrintResult> connect({Duration? timeout = const Duration(seconds: 5)}) async {
+  Future<NetworkPrintResult> connect(
+      {Duration? timeout = const Duration(seconds: 5)}) async {
     try {
       _socket = await Socket.connect(_host, _port, timeout: _timeout);
       _isConnected = true;
@@ -29,7 +30,8 @@ class FlutterThermalPrinterNetwork {
     }
   }
 
-  Future<NetworkPrintResult> printTicket(List<int> data, {bool isDisconnect = true}) async {
+  Future<NetworkPrintResult> printTicket(List<int> data,
+      {bool isDisconnect = true}) async {
     try {
       if (!_isConnected) {
         await connect();

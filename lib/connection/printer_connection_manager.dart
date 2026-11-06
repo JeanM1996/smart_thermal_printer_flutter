@@ -130,10 +130,77 @@ class PrinterConnectionManager {
     _notifyListeners();
   }
 
-  /// Imprimir datos usando la conexión activa
-  Future<bool> print(List<int> bytes, {bool longData = false}) async {
+  // ---------------------------------------------------------------------------
+  // Impresión controlada
+  // ---------------------------------------------------------------------------
+
+  /// Tiempo máximo que se espera a la impresora antes de dar el envío por
+  /// fallido. No se reintenta solo: un reintento automático puede sacar el
+  /// comprobante dos veces.
+  static const Duration printTimeout = Duration(seconds: 45);
+
+  bool _isPrinting = false;
+  PrintErrorInfo? _lastPrintError;
+  final Map<String, DateTime> _recentPrints = {};
+
+  /// `true` mientras hay un envío a la impresora en curso (en cualquier
+  /// botón de la app).
+  bool get isPrinting => _isPrinting;
+
+  /// Por qué falló la última impresión, explicado para el usuario
+  /// (`null` si la última salió bien).
+  PrintErrorInfo? get lastPrintError => _lastPrintError;
+
+  PrintErrorInfo _fail(Object error) {
+    final info = describePrintError(error);
+    _lastPrintError = info;
+    _connectionError = info.message;
+    return info;
+  }
+
+  /// Huella del contenido (FNV-1a 32 bits), para reconocer el mismo
+  /// comprobante sin guardar sus bytes.
+  static String fingerprint(List<int> bytes) {
+    var hash = 0x811c9dc5;
+    for (final b in bytes) {
+      hash ^= b & 0xff;
+      hash = (hash * 0x01000193) & 0xffffffff;
+    }
+    return '${bytes.length}:${hash.toRadixString(16)}';
+  }
+
+  /// Cuándo se imprimió con éxito [key] por última vez (dentro de [window]).
+  DateTime? lastPrintedAt(String key,
+      {Duration window = const Duration(minutes: 10)}) {
+    final at = _recentPrints[key];
+    if (at == null) return null;
+    if (DateTime.now().difference(at) > window) {
+      _recentPrints.remove(key);
+      return null;
+    }
+    return at;
+  }
+
+  /// Imprimir datos usando la conexión activa.
+  ///
+  /// - Una sola impresión a la vez en toda la app: si ya hay una en curso,
+  ///   devuelve `false` sin enviar nada (doble toque, dos botones).
+  /// - Con [printTimeout]: si la impresora no responde, se reporta error en
+  ///   vez de quedar colgado.
+  /// - Si sale bien, registra [key] (o la huella de [bytes]) para que la UI
+  ///   pueda pedir confirmación antes de una reimpresión.
+  Future<bool> print(
+    List<int> bytes, {
+    bool longData = false,
+    String? key,
+  }) async {
+    if (_isPrinting) {
+      _fail('Ya hay una impresión en curso');
+      debugPrint('Impresión ignorada: ya hay una en curso');
+      return false;
+    }
     if (_connectedPrinter == null) {
-      _connectionError = 'No printer connected';
+      _fail('No hay impresora conectada');
       debugPrint('Error: No printer connected');
       _notifyListeners();
       return false;
@@ -142,19 +209,28 @@ class PrinterConnectionManager {
     debugPrint(
         'Iniciando impresión con ${bytes.length} bytes, longData: $longData');
 
+    _isPrinting = true;
+    _notifyListeners();
     try {
-      await SmartThermalPrinterFlutter.instance.printData(
-        _connectedPrinter!,
-        bytes,
-        longData: longData,
-      );
+      await SmartThermalPrinterFlutter.instance
+          .printData(_connectedPrinter!, bytes, longData: longData)
+          .timeout(printTimeout);
+      _recentPrints[key ?? fingerprint(bytes)] = DateTime.now();
+      _connectionError = null;
+      _lastPrintError = null;
       debugPrint('Impresión completada exitosamente');
       return true;
-    } catch (e) {
-      _connectionError = 'Print error: $e';
-      debugPrint('Error de impresión: $e');
-      _notifyListeners();
+    } on TimeoutException catch (e) {
+      _fail(e);
+      debugPrint('Timeout de impresión');
       return false;
+    } catch (e) {
+      _fail(e);
+      debugPrint('Error de impresión: $e');
+      return false;
+    } finally {
+      _isPrinting = false;
+      _notifyListeners();
     }
   }
 

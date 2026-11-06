@@ -17,6 +17,7 @@ export 'package:flutter_blue_plus/flutter_blue_plus.dart'
     show BluetoothDevice, BluetoothConnectionState;
 
 export 'network/network_printer.dart';
+export 'connection/print_error_messages.dart';
 
 class SmartThermalPrinterFlutter {
   SmartThermalPrinterFlutter._();
@@ -87,7 +88,9 @@ class SmartThermalPrinterFlutter {
         connectionTypes: connectionTypes,
       );
     } else {
-      OtherPrinterManager.instance.getPrinters(
+      // Con `await`: si la búsqueda falla (p. ej. Bluetooth aún no listo en
+      // iOS) el error llega a quien llamó en vez de perderse.
+      await OtherPrinterManager.instance.getPrinters(
         connectionTypes: connectionTypes,
         androidUsesFineLocation: androidUsesFineLocation,
       );

@@ -8,6 +8,8 @@ export 'network/network_printer.dart';
 export 'smart_thermal_printer_flutter.dart';
 // Models and utilities
 export 'utils/printer.dart';
+export 'widgets/print_progress_dialog.dart';
+export 'widgets/printer_theme.dart';
 export 'widgets/smart_thermal_print_button.dart';
 // Widgets
 export 'widgets/thermal_printer_list.dart';

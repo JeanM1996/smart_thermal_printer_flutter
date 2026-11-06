@@ -34,7 +34,8 @@ class RawPrinter {
         final buffer = Uint8List.fromList(data);
         final bytesWritten = calloc<DWORD>();
 
-        WritePrinter(printerHandle, buffer.allocatePointer(), buffer.length, bytesWritten);
+        WritePrinter(printerHandle, buffer.allocatePointer(), buffer.length,
+            bytesWritten);
 
         EndPagePrinter(printerHandle);
         EndDocPrinter(printerHandle);

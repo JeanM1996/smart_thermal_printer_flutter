@@ -107,13 +107,16 @@ class OtherPrinterManager {
         );
       } catch (e) {
         log("FlutterThermalPrinter: Unable to Print Data $e");
+        rethrow;
       }
     } else {
       try {
         final device = BluetoothDevice.fromId(printer.address!);
+        // Antes estos casos solo hacían `log` y la impresión se reportaba
+        // como exitosa sin haber salido nada: el usuario volvía a tocar
+        // imprimir. Ahora el error sube a quien imprime.
         if (!device.isConnected) {
-          log('Device is not connected');
-          return;
+          throw StateError('La impresora no está conectada');
         }
         final services = (await device.discoverServices()).skipWhile((value) =>
             value.characteristics
@@ -129,8 +132,8 @@ class OtherPrinterManager {
           }
         }
         if (writecharacteristic == null) {
-          log('No write characteristic found');
-          return;
+          throw StateError(
+              'La impresora no acepta datos (sin característica de escritura)');
         }
         if (longData) {
           int mtu = (await device.mtu.first) - 30;
@@ -156,6 +159,7 @@ class OtherPrinterManager {
         return;
       } catch (e) {
         log('Failed to print data to device $e');
+        rethrow;
       }
     }
   }

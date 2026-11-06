@@ -21,7 +21,8 @@ class Printer {
 
   Printer.fromJson(Map<String, dynamic> json) {
     address = json['address'];
-    name = json['connectionType'] == 'BLE' ? json['platformName'] : json['name'];
+    name =
+        json['connectionType'] == 'BLE' ? json['platformName'] : json['name'];
     connectionType = _getConnectionTypeFromString(json['connectionType']);
     isConnected = json['isConnected'];
     vendorId = json['vendorId'];

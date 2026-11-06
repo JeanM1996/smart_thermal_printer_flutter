@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../connection/printer_connection_manager.dart';
 import '../utils/printer.dart';
+import '../connection/print_error_messages.dart';
+import 'print_progress_dialog.dart';
 import 'printer_selection_modal.dart';
+import 'printer_theme.dart';
 
 /// Widget de botón para impresión rápida con conexión persistente
 class SmartThermalPrintButton extends StatefulWidget {
@@ -51,6 +54,18 @@ class SmartThermalPrintButton extends StatefulWidget {
   //icoNColor
   final Color? iconColor;
 
+  /// Identifica el comprobante (p. ej. id del pago) para detectar
+  /// reimpresiones. Sin él se usa la huella de los bytes, que cambia si el
+  /// ticket lleva la hora de impresión.
+  final String? printKey;
+
+  /// Pedir confirmación si el mismo comprobante ya se imprimió hace poco.
+  final bool confirmReprint;
+
+  /// Mostrar el diálogo animado teléfono → impresora mientras imprime. En
+  /// `false` se mantiene el comportamiento anterior (SnackBars).
+  final bool showPrintAnimation;
+
   const SmartThermalPrintButton({
     super.key,
     this.printData,
@@ -68,6 +83,9 @@ class SmartThermalPrintButton extends StatefulWidget {
     this.connectionTypes = const [ConnectionType.USB, ConnectionType.BLE],
     this.onPrinterConnected,
     this.iconColor,
+    this.printKey,
+    this.confirmReprint = true,
+    this.showPrintAnimation = true,
   }) : assert(printData != null || generatePrintData != null,
             'Debe proporcionar printData o generatePrintData');
 
@@ -103,11 +121,11 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
     // Si está reconectando, esperar a que termine
     if (_connectionManager.isReconnecting) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Esperando reconexión, intente nuevamente...'),
-            backgroundColor: Colors.orange,
-          ),
+        showPrinterSnackBar(
+          context,
+          'Esperando reconexión, intente nuevamente...',
+          color: (t) => t.warning,
+          icon: Icons.info_rounded,
         );
       }
       return;
@@ -134,11 +152,11 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
 
         if (!printerConnected) {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('No se pudo conectar a la impresora'),
-                backgroundColor: Colors.orange,
-              ),
+            showPrinterSnackBar(
+              context,
+              'No se pudo conectar a la impresora',
+              color: (t) => t.warning,
+              icon: Icons.info_rounded,
             );
           }
           return; // El usuario canceló o no se conectó
@@ -148,11 +166,11 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
         // Comportamiento original: mostrar error
         widget.onPrintFailed?.call('No hay impresora conectada');
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No hay impresora conectada'),
-              backgroundColor: Colors.red,
-            ),
+          showPrinterSnackBar(
+            context,
+            'No hay impresora conectada',
+            color: (t) => t.danger,
+            icon: Icons.error_rounded,
           );
         }
         return;
@@ -171,11 +189,12 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
       backgroundColor: Colors.transparent,
       isDismissible: true,
       builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: PrinterTheme.of(context).sheet,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
           ),
         ),
         child: PrinterSelectionModal(
@@ -200,91 +219,170 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
 
   /// Realizar la impresión real
   Future<void> _performPrint() async {
+    // Otro botón (u otro toque) ya está imprimiendo: no se encola nada.
+    if (_isPrinting || _connectionManager.isPrinting) {
+      _notifyError(describePrintError('Ya hay una impresión en curso'));
+      return;
+    }
     // Verificar nuevamente la conexión antes de imprimir
     if (!_connectionManager.isConnected) {
-      const error = 'No hay impresora conectada al momento de imprimir';
-      widget.onPrintFailed?.call(error);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(error),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      _notifyError(describePrintError('No hay impresora conectada'));
       return;
     }
 
-    setState(() {
-      _isPrinting = true;
-    });
-
+    setState(() => _isPrinting = true);
     try {
-      List<int> dataToprint;
-
-      if (widget.printData != null) {
-        dataToprint = widget.printData!;
-      } else {
-        dataToprint = await widget.generatePrintData!();
-      }
-
-      if (dataToprint.isEmpty) {
-        throw Exception('No hay datos para imprimir');
-      }
-
-      debugPrint(
-          'Iniciando impresión con ${dataToprint.length} bytes de datos');
-
-      final success = await _connectionManager.print(
-        dataToprint,
-        longData: widget.longData,
-      );
-
-      if (success) {
-        // Realizar disconnect y reconnect para verificar errores de la impresora
-        await _performDisconnectReconnect();
-
-        widget.onPrintCompleted?.call();
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Impresión completada exitosamente'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
-      } else {
-        final error = _connectionManager.connectionError ??
-            'Error desconocido de impresión';
-        widget.onPrintFailed?.call(error);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error de impresión: $error'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      final errorMessage = 'Error durante la impresión: $e';
-      debugPrint(errorMessage);
-      widget.onPrintFailed?.call(errorMessage);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: Colors.red,
+      List<int> data;
+      try {
+        data = widget.printData ?? await widget.generatePrintData!();
+      } catch (e) {
+        debugPrint('Error generando el comprobante: $e');
+        _notifyError(
+          const PrintErrorInfo(
+            'No se pudo armar el comprobante',
+            'Vuelve a abrirlo e intenta de nuevo.',
           ),
         );
+        return;
+      }
+      if (data.isEmpty) {
+        _notifyError(describePrintError('No hay datos para imprimir'));
+        return;
+      }
+
+      final key = widget.printKey ?? PrinterConnectionManager.fingerprint(data);
+      if (widget.confirmReprint && !await _confirmReprintIfNeeded(key)) {
+        return;
+      }
+
+      // Bucle de reintento: lo decide el usuario desde el diálogo, nunca
+      // automático (un reintento a ciegas puede duplicar el comprobante).
+      while (mounted) {
+        final retry = await _printOnce(data, key);
+        if (!retry) break;
+        if (!_connectionManager.isConnected) {
+          _notifyError(describePrintError('No hay impresora conectada'));
+          break;
+        }
       }
     } finally {
-      if (mounted) {
-        setState(() {
-          _isPrinting = false;
-        });
-      }
+      if (mounted) setState(() => _isPrinting = false);
     }
+  }
+
+  /// Un intento de impresión. Devuelve `true` si el usuario pidió reintentar.
+  Future<bool> _printOnce(List<int> data, String key) async {
+    ValueNotifier<PrintProgress>? progress;
+    Future<PrintDialogResult?>? dialog;
+    if (widget.showPrintAnimation && mounted) {
+      progress = ValueNotifier(PrintProgress(
+        PrintPhase.sending,
+        printerName: _connectionManager.connectedPrinter?.name,
+      ));
+      dialog = showPrintProgressDialog(context, progress);
+    }
+
+    debugPrint('Iniciando impresión con ${data.length} bytes de datos');
+    final success = await _connectionManager.print(
+      data,
+      longData: widget.longData,
+      key: key,
+    );
+
+    if (success) {
+      progress?.value = PrintProgress(
+        PrintPhase.verifying,
+        printerName: _connectionManager.connectedPrinter?.name,
+      );
+      // Realizar disconnect y reconnect para verificar errores de la impresora
+      await _performDisconnectReconnect();
+      widget.onPrintCompleted?.call();
+      if (progress != null) {
+        progress.value = const PrintProgress(PrintPhase.success);
+        await dialog;
+        progress.dispose();
+      } else if (mounted) {
+        showPrinterSnackBar(
+          context,
+          'Impresión completada exitosamente',
+          color: (t) => t.success,
+          icon: Icons.check_circle_rounded,
+        );
+      }
+      return false;
+    }
+
+    final info = _connectionManager.lastPrintError ??
+        describePrintError(_connectionManager.connectionError ?? '');
+    widget.onPrintFailed?.call(info.message);
+    if (progress != null) {
+      progress.value = PrintProgress(PrintPhase.error, error: info);
+      final result = await dialog;
+      progress.dispose();
+      return result == PrintDialogResult.retry;
+    }
+    _notifyError(info, callback: false);
+    return false;
+  }
+
+  /// Si el comprobante ya salió hace poco, preguntar antes de otra copia.
+  Future<bool> _confirmReprintIfNeeded(String key) async {
+    final at = _connectionManager.lastPrintedAt(key);
+    if (at == null || !mounted) return true;
+    final minutes = DateTime.now().difference(at).inMinutes;
+    final when = minutes < 1
+        ? 'hace un momento'
+        : 'hace $minutes ${minutes == 1 ? 'minuto' : 'minutos'}';
+    final t = PrinterTheme.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: t.sheet,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        icon: Icon(Icons.content_copy_rounded, color: t.warning, size: 30),
+        title: Text(
+          '¿Imprimir otra copia?',
+          style: TextStyle(color: t.text, fontWeight: FontWeight.w700),
+        ),
+        content: Text(
+          'Este comprobante ya se imprimió $when.',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: t.textMuted, fontSize: 15),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            style: TextButton.styleFrom(foregroundColor: t.textMuted),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: FilledButton.styleFrom(
+              backgroundColor: t.primary,
+              foregroundColor: t.onPrimary,
+            ),
+            child: const Text('Imprimir copia'),
+          ),
+        ],
+      ),
+    );
+    return ok ?? false;
+  }
+
+  void _notifyError(
+    PrintErrorInfo info, {
+    bool callback = true,
+  }) {
+    if (callback) widget.onPrintFailed?.call(info.message);
+    if (!mounted) return;
+    showPrinterSnackBar(
+      context,
+      info.message,
+      color: (t) => t.danger,
+      icon: Icons.error_rounded,
+      duration: const Duration(seconds: 5),
+    );
   }
 
   /// Realizar desconexión y reconexión para verificar errores de la impresora
@@ -310,12 +408,11 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
         debugPrint(
             'Advertencia: No se pudo reconectar después de la impresión');
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content:
-                  Text('Advertencia: Reconexión falló después de impresión'),
-              backgroundColor: Colors.orange,
-            ),
+          showPrinterSnackBar(
+            context,
+            'Advertencia: Reconexión falló después de impresión',
+            color: (t) => t.warning,
+            icon: Icons.info_rounded,
           );
         }
       } else {
@@ -347,12 +444,12 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
   /// Obtiene el icono del botón según el estado de conexión
   Widget _getButtonIcon(bool isConnected) {
     if (_connectionManager.isReconnecting) {
-      return const SizedBox(
+      return SizedBox(
         width: 20,
         height: 20,
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          color: widget.iconColor ?? Colors.white,
         ),
       );
     }
@@ -372,82 +469,80 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
 
   @override
   Widget build(BuildContext context) {
+    final t = PrinterTheme.of(context);
     final isConnected = _connectionManager.isConnected;
     final connectedPrinter = _connectionManager.connectedPrinter;
+    final reconnecting = _connectionManager.isReconnecting;
+    final statusColor = reconnecting ? t.warning : t.success;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Información de la impresora conectada
+        // Impresora conectada: chip de estado + desconectar.
         if (widget.showConnectedPrinter &&
             isConnected &&
             connectedPrinter != null)
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  margin: const EdgeInsets.only(bottom: 8),
-                  decoration: BoxDecoration(
-                    color: _connectionManager.isReconnecting
-                        ? Colors.orange.shade50
-                        : Colors.green.shade50,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: _connectionManager.isReconnecting
-                          ? Colors.orange.shade200
-                          : Colors.green.shade200,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: [
+                Flexible(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                    decoration: BoxDecoration(
+                      color: t.soft(statusColor),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: statusColor.withValues(alpha: .35),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (reconnecting)
+                          SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 1.8,
+                              color: statusColor,
+                            ),
+                          )
+                        else
+                          Icon(
+                            Icons.check_circle_rounded,
+                            size: 16,
+                            color: statusColor,
+                          ),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            reconnecting
+                                ? 'Reconectando...'
+                                : 'Conectado: ${connectedPrinter.name ?? 'Impresora'}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              color: statusColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        _connectionManager.isReconnecting
-                            ? Icons.sync
-                            : Icons.check_circle,
-                        size: 16,
-                        color: _connectionManager.isReconnecting
-                            ? Colors.orange.shade600
-                            : Colors.green.shade600,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        _connectionManager.isReconnecting
-                            ? 'Reconectando...'
-                            : 'Conectado: ${connectedPrinter.name ?? 'Impresora'}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: _connectionManager.isReconnecting
-                              ? Colors.orange.shade800
-                              : Colors.green.shade800,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
-              ),
-              const SizedBox(width: 4),
-              if (!_connectionManager.isReconnecting)
-                Expanded(
-                  child: DisconnectPrinterButton(
-                    size: 15,
-                    color: const Color(0xFF23508F),
-                    onDisconnected: () {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Impresora desconectada'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      }
-                    },
+                if (!reconnecting) ...[
+                  const SizedBox(width: 6),
+                  DisconnectPrinterButton(
+                    size: 34,
+                    onDisconnected: () {},
                   ),
-                )
-            ],
+                ],
+              ],
+            ),
           ),
 
         // Botón de impresión
@@ -456,35 +551,37 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
             SizedBox(
               height: widget.height ?? 50,
               child: ElevatedButton.icon(
-                onPressed: (!_isPrinting && !_connectionManager.isReconnecting)
-                    ? _handlePrint
-                    : null,
+                onPressed:
+                    (!_isPrinting && !reconnecting) ? _handlePrint : null,
                 style: widget.buttonStyle ??
                     ElevatedButton.styleFrom(
-                      backgroundColor: _connectionManager.isReconnecting
-                          ? Colors.orange
-                          : (isConnected ? Colors.blue : Colors.orange),
+                      backgroundColor: reconnecting || !isConnected
+                          ? t.fill(t.warning)
+                          : t.primary,
                       foregroundColor: Colors.white,
+                      elevation: 0,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 24, vertical: 12),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(14),
                       ),
                     ),
                 icon: _isPrinting
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          color: widget.iconColor ?? Colors.white,
                         ),
                       )
                     : _getButtonIcon(isConnected),
                 label: Text(
                   _getButtonText(isConnected),
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
@@ -544,11 +641,11 @@ class _DisconnectPrinterButtonState extends State<DisconnectPrinterButton> {
     await _connectionManager.disconnect();
     widget.onDisconnected?.call();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impresora desconectada'),
-          backgroundColor: Colors.orange,
-        ),
+      showPrinterSnackBar(
+        context,
+        'Impresora desconectada',
+        color: (t) => t.warning,
+        icon: Icons.info_rounded,
       );
     }
   }
@@ -559,16 +656,21 @@ class _DisconnectPrinterButtonState extends State<DisconnectPrinterButton> {
       return const SizedBox.shrink();
     }
 
+    final t = PrinterTheme.of(context);
+    final color = widget.color ?? t.danger;
     return IconButton(
       onPressed: _handleDisconnect,
       icon: Icon(
-        Icons.link_off,
-        size: widget.size * 0.9,
-        color: widget.color ?? Colors.red,
+        Icons.link_off_rounded,
+        size: widget.size * 0.52,
+        color: color,
       ),
       style: IconButton.styleFrom(
-        backgroundColor: (widget.color ?? Colors.red).withValues(alpha: 0.1),
+        backgroundColor: t.soft(color),
         fixedSize: Size(widget.size, widget.size),
+        minimumSize: Size(widget.size, widget.size),
+        padding: EdgeInsets.zero,
+        shape: const CircleBorder(),
       ),
       tooltip: 'Desconectar impresora',
     );
