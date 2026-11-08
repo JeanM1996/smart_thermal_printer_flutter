@@ -27,6 +27,12 @@ class PrinterConnectionManager {
   int _reconnectAttempts = 0;
   static const int _maxReconnectAttempts = 5;
 
+  /// Cambia con cada desconexión manual o conexión nueva. Una reconexión
+  /// automática que estaba en vuelo compara contra esto al terminar: si el
+  /// usuario desconectó (o eligió otra impresora) mientras tanto, no revive
+  /// la conexión vieja.
+  int _session = 0;
+
   final List<Function()> _listeners = [];
 
   /// Agregar listener para cambios de estado
@@ -66,6 +72,8 @@ class PrinterConnectionManager {
     if (_isConnecting) return false;
 
     _isConnecting = true;
+    // Una conexión elegida a mano reemplaza cualquier reconexión en curso.
+    _session++;
     _isReconnecting = false;
     _connectionError = null;
     _reconnectAttempts = 0;
@@ -106,28 +114,41 @@ class PrinterConnectionManager {
     }
   }
 
-  /// Desconectar de la impresora actual
+  /// Desconectar de la impresora actual (acción manual del usuario).
+  ///
+  /// Funciona también mientras reconecta: el estado se limpia de inmediato
+  /// (la UI no espera al Bluetooth, que con una conexión en vuelo puede
+  /// tardar o no responder) y la reconexión en curso se cancela, así que si
+  /// la impresora vuelve a estar al alcance no se reconecta sola.
   Future<void> disconnect() async {
-    if (_connectedPrinter == null) return;
+    final printer = _connectedPrinter;
+    if (printer == null && !_isReconnecting) return;
 
+    _session++;
     _stopConnectionMonitoring();
     _stopConnectionStateListening();
-
-    try {
-      if (Platform.isWindows) {
-        // Windows disconnect implementation
-      } else {
-        await OtherPrinterManager.instance.disconnect(_connectedPrinter!);
-      }
-    } catch (e) {
-      debugPrint('Error desconectando de impresora: $e');
-    }
-
     _connectedPrinter = null;
     _connectionError = null;
     _reconnectAttempts = 0;
     _isReconnecting = false;
     _notifyListeners();
+
+    if (printer != null) await _disconnectQuietly(printer);
+  }
+
+  /// Corta la conexión física sin colgar a quien llama.
+  Future<void> _disconnectQuietly(Printer printer) async {
+    try {
+      if (Platform.isWindows) {
+        // Windows disconnect implementation
+      } else {
+        await OtherPrinterManager.instance
+            .disconnect(printer)
+            .timeout(const Duration(seconds: 5));
+      }
+    } catch (e) {
+      debugPrint('Error desconectando de impresora: $e');
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -258,9 +279,15 @@ class PrinterConnectionManager {
     }
   }
 
-  /// Intentar reconectar automáticamente
-  Future<void> _attemptReconnect() async {
-    if (_connectedPrinter == null ||
+  /// Intentar reconectar automáticamente.
+  ///
+  /// [session] viene de un intento anterior: si cambió (desconexión manual o
+  /// impresora nueva) ya no hay nada que reintentar.
+  Future<void> _attemptReconnect([int? session]) async {
+    final printer = _connectedPrinter;
+    final current = session ?? _session;
+    if (printer == null ||
+        current != _session ||
         _isReconnecting ||
         _reconnectAttempts >= _maxReconnectAttempts) {
       return;
@@ -275,11 +302,17 @@ class PrinterConnectionManager {
     try {
       bool success;
       if (Platform.isWindows) {
-        success =
-            await WindowPrinterManager.instance.connect(_connectedPrinter!);
+        success = await WindowPrinterManager.instance.connect(printer);
       } else {
-        success =
-            await OtherPrinterManager.instance.connect(_connectedPrinter!);
+        success = await OtherPrinterManager.instance.connect(printer);
+      }
+
+      if (current != _session) {
+        // El usuario desconectó mientras se reconectaba: si la conexión
+        // alcanzó a volver, se corta; el estado ya quedó desconectado.
+        debugPrint('Reconexión descartada: se desconectó a mano');
+        if (success) await _disconnectQuietly(printer);
+        return;
       }
 
       if (success) {
@@ -299,11 +332,12 @@ class PrinterConnectionManager {
         } else {
           // Esperar antes del próximo intento
           await Future.delayed(Duration(seconds: 2 * _reconnectAttempts));
-          _attemptReconnect();
+          _attemptReconnect(current);
         }
         _notifyListeners();
       }
     } catch (e) {
+      if (current != _session) return;
       _isReconnecting = false;
       debugPrint('Error durante reconexión: $e');
       if (_reconnectAttempts >= _maxReconnectAttempts) {
@@ -312,7 +346,7 @@ class PrinterConnectionManager {
       } else {
         // Esperar antes del próximo intento
         await Future.delayed(Duration(seconds: 2 * _reconnectAttempts));
-        _attemptReconnect();
+        _attemptReconnect(current);
       }
       _notifyListeners();
     }

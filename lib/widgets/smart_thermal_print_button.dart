@@ -623,13 +623,13 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
                     ),
                   ),
                 ),
-                if (!reconnecting) ...[
-                  const SizedBox(width: 6),
-                  DisconnectPrinterButton(
-                    size: 34,
-                    onDisconnected: () {},
-                  ),
-                ],
+                // También mientras reconecta: si la impresora se apagó, el
+                // usuario puede soltarla en vez de quedar esperando.
+                const SizedBox(width: 6),
+                DisconnectPrinterButton(
+                  size: 34,
+                  onDisconnected: () {},
+                ),
               ],
             ),
           ),
