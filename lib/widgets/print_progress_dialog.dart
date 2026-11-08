@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../connection/print_error_messages.dart';
+import '../l10n/printer_strings.dart';
 import 'printer_theme.dart';
 
 /// Fase visible de una impresión.
@@ -24,16 +25,24 @@ enum PrintDialogResult { done, retry }
 /// propio diálogo: solo en éxito (tras un instante) o por acción del usuario
 /// en error. Mientras se envía no se puede cerrar, para no tocar imprimir
 /// dos veces.
+///
+/// [strings] fija los textos; sin él se resuelven con [PrinterStrings.of]
+/// sobre [context] (el diálogo vive en otra ruta, por eso se capturan aquí).
 Future<PrintDialogResult?> showPrintProgressDialog(
   BuildContext context,
-  ValueNotifier<PrintProgress> progress,
-) {
+  ValueNotifier<PrintProgress> progress, {
+  PrinterStrings? strings,
+}) {
+  final s = strings ?? PrinterStrings.of(context);
   return showDialog<PrintDialogResult>(
     context: context,
     barrierDismissible: false,
     builder: (_) => PopScope(
       canPop: false,
-      child: _PrintProgressDialog(progress: progress),
+      child: PrinterStringsScope(
+        strings: s,
+        child: _PrintProgressDialog(progress: progress),
+      ),
     ),
   );
 }
@@ -102,22 +111,23 @@ class _PrintProgressDialogState extends State<_PrintProgressDialog>
   @override
   Widget build(BuildContext context) {
     final t = PrinterTheme.of(context);
+    final s = PrinterStrings.of(context);
     final p = widget.progress.value;
-    final error = p.error;
+    final error = p.error?.localized(s);
     final isError = _phase == PrintPhase.error;
 
     final title = switch (_phase) {
-      PrintPhase.sending => 'Enviando a la impresora',
-      PrintPhase.verifying => 'Imprimiendo comprobante',
-      PrintPhase.success => '¡Comprobante impreso!',
-      PrintPhase.error => error?.title ?? 'No se pudo imprimir',
+      PrintPhase.sending => s.progressSending,
+      PrintPhase.verifying => s.progressVerifying,
+      PrintPhase.success => s.progressSuccess,
+      PrintPhase.error => error?.title ?? s.errorUnknownTitle,
     };
     final subtitle = switch (_phase) {
       PrintPhase.sending ||
       PrintPhase.verifying =>
-        p.printerName == null ? 'No cierres esta pantalla' : p.printerName!,
-      PrintPhase.success => 'Retira el papel de la impresora',
-      PrintPhase.error => error?.hint ?? 'Intenta de nuevo.',
+        p.printerName ?? s.progressKeepScreenOpen,
+      PrintPhase.success => s.progressRemovePaper,
+      PrintPhase.error => error?.hint ?? s.progressTryAgain,
     };
     final accent = switch (_phase) {
       PrintPhase.success => t.success,
@@ -190,7 +200,7 @@ class _PrintProgressDialogState extends State<_PrintProgressDialog>
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          'Si el papel ya salió completo, no reimprimas.',
+                          s.progressMayHavePrinted,
                           style: TextStyle(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w600,
@@ -217,7 +227,7 @@ class _PrintProgressDialogState extends State<_PrintProgressDialog>
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14)),
                         ),
-                        child: const Text('Cerrar'),
+                        child: Text(s.close),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -226,7 +236,7 @@ class _PrintProgressDialogState extends State<_PrintProgressDialog>
                         onPressed: () =>
                             Navigator.of(context).pop(PrintDialogResult.retry),
                         icon: const Icon(Icons.refresh_rounded, size: 20),
-                        label: const Text('Reintentar'),
+                        label: Text(s.retry),
                         style: FilledButton.styleFrom(
                           backgroundColor: t.primary,
                           foregroundColor: t.onPrimary,

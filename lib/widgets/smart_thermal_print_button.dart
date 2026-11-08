@@ -3,9 +3,49 @@ import 'package:flutter/material.dart';
 import '../connection/printer_connection_manager.dart';
 import '../utils/printer.dart';
 import '../connection/print_error_messages.dart';
+import '../l10n/printer_strings.dart';
 import 'print_progress_dialog.dart';
 import 'printer_selection_modal.dart';
 import 'printer_theme.dart';
+
+/// Estado del botón que recibe [SmartThermalPrintButton.builder].
+class SmartPrintButtonStatus {
+  const SmartPrintButtonStatus({
+    required this.isPrinting,
+    required this.isConnected,
+    required this.isReconnecting,
+    this.printerName,
+    this.lastError,
+    this.selectPrinter,
+    this.disconnect,
+  });
+
+  final bool isPrinting;
+  final bool isConnected;
+  final bool isReconnecting;
+
+  /// Nombre de la impresora conectada, si hay.
+  final String? printerName;
+
+  /// Mensaje claro del último fallo de impresión o conexión, si hubo.
+  final String? lastError;
+
+  /// Abre el selector de impresoras (conectar o cambiar de impresora) sin
+  /// imprimir. `null` mientras imprime.
+  final Future<void> Function()? selectPrinter;
+
+  /// Desconecta la impresora actual. `null` si no hay ninguna conectada.
+  final Future<void> Function()? disconnect;
+}
+
+/// Pinta el botón a gusto de la app. [onPressed] es `null` mientras imprime
+/// o reconecta; llamarlo hace lo mismo que el botón por defecto (conectar si
+/// hace falta, imprimir, diálogo de progreso y errores).
+typedef SmartPrintButtonBuilder = Widget Function(
+  BuildContext context,
+  SmartPrintButtonStatus status,
+  VoidCallback? onPressed,
+);
 
 /// Widget de botón para impresión rápida con conexión persistente
 class SmartThermalPrintButton extends StatefulWidget {
@@ -15,11 +55,13 @@ class SmartThermalPrintButton extends StatefulWidget {
   /// Función para generar los datos de impresión
   final Future<List<int>> Function()? generatePrintData;
 
-  /// Texto del botón
-  final String buttonText;
+  /// Texto del botón. Sin él se usa [PrinterStrings.printButton] del idioma
+  /// actual ("Imprimir").
+  final String? buttonText;
 
-  /// Texto cuando está imprimiendo
-  final String printingText;
+  /// Texto cuando está imprimiendo. Sin él se usa [PrinterStrings.printing]
+  /// ("Imprimiendo...").
+  final String? printingText;
 
   /// Estilo del botón
   final ButtonStyle? buttonStyle;
@@ -66,12 +108,16 @@ class SmartThermalPrintButton extends StatefulWidget {
   /// `false` se mantiene el comportamiento anterior (SnackBars).
   final bool showPrintAnimation;
 
+  /// Opcional: reemplaza el botón y el chip de conexión por lo que pinte la
+  /// app (por ejemplo un mosaico). Sin él se ve el botón de siempre.
+  final SmartPrintButtonBuilder? builder;
+
   const SmartThermalPrintButton({
     super.key,
     this.printData,
     this.generatePrintData,
-    this.buttonText = 'Imprimir',
-    this.printingText = 'Imprimiendo...',
+    this.buttonText,
+    this.printingText,
     this.buttonStyle,
     this.icon,
     this.onPrintCompleted,
@@ -86,6 +132,7 @@ class SmartThermalPrintButton extends StatefulWidget {
     this.printKey,
     this.confirmReprint = true,
     this.showPrintAnimation = true,
+    this.builder,
   }) : assert(printData != null || generatePrintData != null,
             'Debe proporcionar printData o generatePrintData');
 
@@ -99,10 +146,19 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
       PrinterConnectionManager.instance;
   bool _isPrinting = false;
 
+  /// Textos del idioma actual (ver [PrinterStrings.of]).
+  PrinterStrings _s = PrinterStrings.es;
+
   @override
   void initState() {
     super.initState();
     _connectionManager.addListener(_onConnectionStateChanged);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _s = PrinterStrings.of(context);
   }
 
   @override
@@ -123,7 +179,7 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
       if (mounted) {
         showPrinterSnackBar(
           context,
-          'Esperando reconexión, intente nuevamente...',
+          _s.waitingReconnection,
           color: (t) => t.warning,
           icon: Icons.info_rounded,
         );
@@ -154,7 +210,7 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
           if (mounted) {
             showPrinterSnackBar(
               context,
-              'No se pudo conectar a la impresora',
+              _s.couldNotConnect,
               color: (t) => t.warning,
               icon: Icons.info_rounded,
             );
@@ -164,11 +220,11 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
         // Si se conectó, continuar con la impresión automáticamente
       } else {
         // Comportamiento original: mostrar error
-        widget.onPrintFailed?.call('No hay impresora conectada');
+        widget.onPrintFailed?.call(_s.noPrinterConnected);
         if (mounted) {
           showPrinterSnackBar(
             context,
-            'No hay impresora conectada',
+            _s.noPrinterConnected,
             color: (t) => t.danger,
             icon: Icons.error_rounded,
           );
@@ -183,6 +239,9 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
 
   /// Mostrar modal de selección de impresora
   Future<Printer?> _showPrinterSelectionModal() async {
+    // El sheet vive en otra ruta: se le pasan los textos resueltos aquí para
+    // que un PrinterStringsScope local también llegue.
+    final strings = _s;
     final result = await showModalBottomSheet<Printer>(
       context: context,
       isScrollControlled: true,
@@ -197,14 +256,17 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
             topRight: Radius.circular(24),
           ),
         ),
-        child: PrinterSelectionModal(
-          connectionTypes: widget.connectionTypes,
-          onPrinterConnected: (printer) {
-            widget.onPrinterConnected?.call(printer);
-            // Cerrar modal y devolver el printer conectado
-            Navigator.of(context).pop(printer);
-          },
-          onConnectionFailed: widget.onPrintFailed,
+        child: PrinterStringsScope(
+          strings: strings,
+          child: PrinterSelectionModal(
+            connectionTypes: widget.connectionTypes,
+            onPrinterConnected: (printer) {
+              widget.onPrinterConnected?.call(printer);
+              // Cerrar modal y devolver el printer conectado
+              Navigator.of(context).pop(printer);
+            },
+            onConnectionFailed: widget.onPrintFailed,
+          ),
         ),
       ),
     );
@@ -221,12 +283,12 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
   Future<void> _performPrint() async {
     // Otro botón (u otro toque) ya está imprimiendo: no se encola nada.
     if (_isPrinting || _connectionManager.isPrinting) {
-      _notifyError(describePrintError('Ya hay una impresión en curso'));
+      _notifyError(_s.error(PrintErrorKind.busy));
       return;
     }
     // Verificar nuevamente la conexión antes de imprimir
     if (!_connectionManager.isConnected) {
-      _notifyError(describePrintError('No hay impresora conectada'));
+      _notifyError(_s.error(PrintErrorKind.disconnected));
       return;
     }
 
@@ -237,16 +299,11 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
         data = widget.printData ?? await widget.generatePrintData!();
       } catch (e) {
         debugPrint('Error generando el comprobante: $e');
-        _notifyError(
-          const PrintErrorInfo(
-            'No se pudo armar el comprobante',
-            'Vuelve a abrirlo e intenta de nuevo.',
-          ),
-        );
+        _notifyError(_s.error(PrintErrorKind.buildFailed));
         return;
       }
       if (data.isEmpty) {
-        _notifyError(describePrintError('No hay datos para imprimir'));
+        _notifyError(_s.error(PrintErrorKind.emptyData));
         return;
       }
 
@@ -261,7 +318,7 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
         final retry = await _printOnce(data, key);
         if (!retry) break;
         if (!_connectionManager.isConnected) {
-          _notifyError(describePrintError('No hay impresora conectada'));
+          _notifyError(_s.error(PrintErrorKind.disconnected));
           break;
         }
       }
@@ -279,7 +336,7 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
         PrintPhase.sending,
         printerName: _connectionManager.connectedPrinter?.name,
       ));
-      dialog = showPrintProgressDialog(context, progress);
+      dialog = showPrintProgressDialog(context, progress, strings: _s);
     }
 
     debugPrint('Iniciando impresión con ${data.length} bytes de datos');
@@ -304,7 +361,7 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
       } else if (mounted) {
         showPrinterSnackBar(
           context,
-          'Impresión completada exitosamente',
+          _s.printSuccess,
           color: (t) => t.success,
           icon: Icons.check_circle_rounded,
         );
@@ -312,8 +369,11 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
       return false;
     }
 
-    final info = _connectionManager.lastPrintError ??
-        describePrintError(_connectionManager.connectionError ?? '');
+    final info = _connectionManager.lastPrintError?.localized(_s) ??
+        describePrintError(
+          _connectionManager.connectionError ?? '',
+          strings: _s,
+        );
     widget.onPrintFailed?.call(info.message);
     if (progress != null) {
       progress.value = PrintProgress(PrintPhase.error, error: info);
@@ -330,9 +390,8 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
     final at = _connectionManager.lastPrintedAt(key);
     if (at == null || !mounted) return true;
     final minutes = DateTime.now().difference(at).inMinutes;
-    final when = minutes < 1
-        ? 'hace un momento'
-        : 'hace $minutes ${minutes == 1 ? 'minuto' : 'minutos'}';
+    final s = _s;
+    final when = minutes < 1 ? s.justNow : s.minutesAgo(minutes);
     final t = PrinterTheme.of(context);
     final ok = await showDialog<bool>(
       context: context,
@@ -342,11 +401,11 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         icon: Icon(Icons.content_copy_rounded, color: t.warning, size: 30),
         title: Text(
-          '¿Imprimir otra copia?',
+          s.reprintTitle,
           style: TextStyle(color: t.text, fontWeight: FontWeight.w700),
         ),
         content: Text(
-          'Este comprobante ya se imprimió $when.',
+          s.reprintMessage(when),
           textAlign: TextAlign.center,
           style: TextStyle(color: t.textMuted, fontSize: 15),
         ),
@@ -354,7 +413,7 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
             style: TextButton.styleFrom(foregroundColor: t.textMuted),
-            child: const Text('Cancelar'),
+            child: Text(s.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(ctx).pop(true),
@@ -362,7 +421,7 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
               backgroundColor: t.primary,
               foregroundColor: t.onPrimary,
             ),
-            child: const Text('Imprimir copia'),
+            child: Text(s.reprintConfirm),
           ),
         ],
       ),
@@ -410,7 +469,7 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
         if (mounted) {
           showPrinterSnackBar(
             context,
-            'Advertencia: Reconexión falló después de impresión',
+            _s.reconnectAfterPrintFailed,
             color: (t) => t.warning,
             icon: Icons.info_rounded,
           );
@@ -427,17 +486,17 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
   /// Obtiene el texto del botón según el estado de conexión
   String _getButtonText(bool isConnected) {
     if (_isPrinting) {
-      return widget.printingText;
+      return widget.printingText ?? _s.printing;
     }
 
     if (_connectionManager.isReconnecting) {
-      return 'Reconectando...';
+      return _s.reconnecting;
     }
 
     if (isConnected) {
-      return widget.buttonText;
+      return widget.buttonText ?? _s.printButton;
     } else {
-      return 'Seleccionar Impresora';
+      return _s.selectPrinterButton;
     }
   }
 
@@ -474,6 +533,32 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
     final connectedPrinter = _connectionManager.connectedPrinter;
     final reconnecting = _connectionManager.isReconnecting;
     final statusColor = reconnecting ? t.warning : t.success;
+
+    final builder = widget.builder;
+    if (builder != null) {
+      return builder(
+        context,
+        SmartPrintButtonStatus(
+          isPrinting: _isPrinting,
+          isConnected: isConnected,
+          isReconnecting: reconnecting,
+          printerName: isConnected ? connectedPrinter?.name : null,
+          lastError: _connectionManager.lastPrintError?.localized(_s).message,
+          selectPrinter: _isPrinting
+              ? null
+              : () async {
+                  await _showPrinterSelectionModal();
+                },
+          disconnect: isConnected && !_isPrinting
+              ? () async {
+                  await _connectionManager.disconnect();
+                  if (mounted) setState(() {});
+                }
+              : null,
+        ),
+        (!_isPrinting && !reconnecting) ? _handlePrint : null,
+      );
+    }
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -520,8 +605,11 @@ class _SmartThermalPrintButtonState extends State<SmartThermalPrintButton> {
                         Flexible(
                           child: Text(
                             reconnecting
-                                ? 'Reconectando...'
-                                : 'Conectado: ${connectedPrinter.name ?? 'Impresora'}',
+                                ? _s.reconnecting
+                                : _s.connectedChip(
+                                    connectedPrinter.name ??
+                                        _s.printerFallbackName,
+                                  ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -635,12 +723,13 @@ class _DisconnectPrinterButtonState extends State<DisconnectPrinterButton> {
   }
 
   Future<void> _handleDisconnect() async {
+    final message = PrinterStrings.of(context).printerDisconnected;
     await _connectionManager.disconnect();
     widget.onDisconnected?.call();
     if (mounted) {
       showPrinterSnackBar(
         context,
-        'Impresora desconectada',
+        message,
         color: (t) => t.warning,
         icon: Icons.info_rounded,
       );
@@ -669,7 +758,7 @@ class _DisconnectPrinterButtonState extends State<DisconnectPrinterButton> {
         padding: EdgeInsets.zero,
         shape: const CircleBorder(),
       ),
-      tooltip: 'Desconectar impresora',
+      tooltip: PrinterStrings.of(context).disconnectPrinter,
     );
   }
 }

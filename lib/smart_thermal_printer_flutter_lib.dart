@@ -6,6 +6,8 @@ export 'connection/printer_connection_manager.dart';
 export 'network/network_printer.dart';
 // Core functionality
 export 'smart_thermal_printer_flutter.dart';
+// Textos / i18n (también vía smart_thermal_printer_flutter.dart)
+export 'l10n/printer_strings.dart';
 // Models and utilities
 export 'utils/printer.dart';
 export 'widgets/print_progress_dialog.dart';

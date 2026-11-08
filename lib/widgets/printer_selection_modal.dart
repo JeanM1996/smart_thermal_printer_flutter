@@ -70,6 +70,15 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
 
   bool get _isConnecting => _connectingPrinterId != null;
 
+  /// Textos del idioma actual (ver [PrinterStrings.of]).
+  PrinterStrings _s = PrinterStrings.es;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _s = PrinterStrings.of(context);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -213,7 +222,7 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
         if (mounted) {
           showPrinterSnackBar(
             context,
-            'Conectado a ${printer.name}',
+            _s.connectedTo(printer.name ?? _s.unnamedPrinter),
             color: (t) => t.success,
             icon: Icons.check_circle_rounded,
             duration: const Duration(seconds: 1),
@@ -224,12 +233,12 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
           }
         }
       } else {
-        final error = _connectionManager.connectionError ?? 'Error de conexión';
+        final error = _connectionManager.connectionError ?? _s.connectionError;
         widget.onConnectionFailed?.call(error);
         if (mounted) {
           showPrinterSnackBar(
             context,
-            'No se pudo conectar: $error',
+            _s.connectFailed(error),
             color: (t) => t.danger,
             icon: Icons.error_rounded,
           );
@@ -240,7 +249,7 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
       if (mounted) {
         showPrinterSnackBar(
           context,
-          'Error de conexión: $e',
+          _s.connectionErrorDetail('$e'),
           color: (t) => t.danger,
           icon: Icons.error_rounded,
         );
@@ -297,9 +306,12 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  child: const Text(
-                    'Cancelar',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  child: Text(
+                    _s.cancel,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
@@ -338,7 +350,7 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Seleccionar impresora',
+                  _s.selectPrinterTitle,
                   style: TextStyle(
                     color: t.text,
                     fontSize: 18,
@@ -355,7 +367,7 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
           ),
           IconButton(
             onPressed: canRefresh ? _startScanning : null,
-            tooltip: 'Buscar de nuevo',
+            tooltip: _s.searchAgain,
             icon: Icon(
               Icons.refresh_rounded,
               color: canRefresh ? t.primary : t.textMuted.withValues(alpha: .4),
@@ -368,15 +380,15 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
 
   String get _headerSubtitle {
     if (_usesBle && _bleStatus != _BleStatus.ready) {
-      return 'Bluetooth no disponible';
+      return _s.bluetoothUnavailable;
     }
     if (_isScanning) {
       return _printers.isEmpty
-          ? 'Buscando cerca de ti…'
-          : 'Buscando · ${_printers.length} encontrada${_printers.length == 1 ? '' : 's'}';
+          ? _s.searchingNearby
+          : _s.searchingFound(_printers.length);
     }
-    if (_printers.isEmpty) return 'Sin resultados';
-    return '${_printers.length} encontrada${_printers.length == 1 ? '' : 's'}';
+    if (_printers.isEmpty) return _s.noResults;
+    return _s.found(_printers.length);
   }
 
   Widget _buildBody(PrinterTheme t) {
@@ -390,9 +402,8 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
               t: t,
               icon: Icons.bluetooth_searching_rounded,
               color: t.primary,
-              title: 'Buscando impresoras…',
-              message: 'Asegúrate de que la impresora esté encendida '
-                  'y cerca del teléfono.',
+              title: _s.searchingPrintersTitle,
+              message: _s.searchingPrintersMessage,
               loading: true,
             )
           : _EmptyState(
@@ -402,12 +413,9 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
                   ? Icons.error_outline_rounded
                   : Icons.print_disabled_rounded,
               color: _scanFailed ? t.danger : t.textMuted,
-              title: _scanFailed
-                  ? 'No se pudo buscar'
-                  : 'No se encontraron impresoras',
-              message: 'Enciende la impresora, acércala al teléfono '
-                  'y vuelve a buscar.',
-              actionLabel: 'Buscar de nuevo',
+              title: _scanFailed ? _s.scanFailedTitle : _s.noPrintersFound,
+              message: _s.noPrintersMessage,
+              actionLabel: _s.searchAgain,
               actionIcon: Icons.search_rounded,
               onAction: _startScanning,
             );
@@ -432,13 +440,9 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
           t: t,
           icon: Icons.bluetooth_disabled_rounded,
           color: t.warning,
-          title: 'Bluetooth apagado',
-          message: isIOS
-              ? 'Actívalo desde el Centro de control o Ajustes. '
-                  'Las impresoras aparecerán aquí solas.'
-              : 'Actívalo para buscar impresoras. '
-                  'Aparecerán aquí en cuanto se encienda.',
-          actionLabel: isIOS ? null : 'Activar Bluetooth',
+          title: _s.bluetoothOffTitle,
+          message: isIOS ? _s.bluetoothOffMessageIOS : _s.bluetoothOffMessage,
+          actionLabel: isIOS ? null : _s.turnOnBluetooth,
           actionIcon: Icons.bluetooth_rounded,
           onAction: isIOS ? null : _turnOnBluetooth,
         );
@@ -448,12 +452,10 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
           t: t,
           icon: Icons.lock_outline_rounded,
           color: t.warning,
-          title: 'Permiso de Bluetooth necesario',
+          title: _s.bluetoothPermissionTitle,
           message: isIOS
-              ? 'Ve a Ajustes › esta app › Bluetooth y actívalo. '
-                  'Al volver, la búsqueda empezará sola.'
-              : 'Concede el permiso de dispositivos cercanos en '
-                  'Ajustes. Al volver, la búsqueda empezará sola.',
+              ? _s.bluetoothPermissionMessageIOS
+              : _s.bluetoothPermissionMessage,
         );
       case _BleStatus.unsupported:
         return _EmptyState(
@@ -461,8 +463,8 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
           t: t,
           icon: Icons.bluetooth_disabled_rounded,
           color: t.danger,
-          title: 'Bluetooth no disponible',
-          message: 'Este dispositivo no admite Bluetooth.',
+          title: _s.bluetoothUnavailable,
+          message: _s.bluetoothUnsupportedMessage,
         );
       case _BleStatus.checking:
       case _BleStatus.ready:
@@ -471,9 +473,8 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
           t: t,
           icon: Icons.bluetooth_rounded,
           color: t.primary,
-          title: 'Preparando Bluetooth…',
-          message: 'Si el sistema te pide permiso, acéptalo para '
-              'buscar impresoras.',
+          title: _s.preparingBluetoothTitle,
+          message: _s.preparingBluetoothMessage,
           loading: true,
         );
     }
@@ -514,7 +515,7 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      printer.name ?? 'Impresora sin nombre',
+                      printer.name ?? _s.unnamedPrinter,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -526,7 +527,8 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
                     const SizedBox(height: 2),
                     Text(
                       [
-                        printer.connectionType?.name ?? 'Desconocido',
+                        printer.connectionType?.name ??
+                            _s.unknownConnectionType,
                         if (printer.address != null) printer.address!,
                       ].join(' · '),
                       maxLines: 1,
@@ -547,7 +549,7 @@ class _PrinterSelectionModalState extends State<PrinterSelectionModal>
                   ),
                 )
               else if (isCurrent)
-                _Pill(label: 'Conectada', color: t.success, t: t)
+                _Pill(label: _s.connectedPill, color: t.success, t: t)
               else
                 Icon(
                   Icons.chevron_right_rounded,

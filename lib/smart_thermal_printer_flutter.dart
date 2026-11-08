@@ -18,6 +18,7 @@ export 'package:flutter_blue_plus/flutter_blue_plus.dart'
 
 export 'network/network_printer.dart';
 export 'connection/print_error_messages.dart';
+export 'l10n/printer_strings.dart';
 
 class SmartThermalPrinterFlutter {
   SmartThermalPrinterFlutter._();

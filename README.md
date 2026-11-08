@@ -221,6 +221,73 @@ DisconnectPrinterButton(
 )
 ```
 
+## 🌐 Internacionalización / i18n
+
+Todos los textos que el plugin muestra (botón, selector de impresoras, diálogo
+de progreso, confirmación de reimpresión y mensajes de error) salen de
+`PrinterStrings`. Funciona **con o sin `intl`**: el plugin no depende de
+`intl`, `flutter_localizations` ni gen-l10n.
+
+Incluidos: `PrinterStrings.es` (los textos de siempre), `PrinterStrings.en` y
+`PrinterStrings.pt` (Brasil). Orden de resolución en cada widget:
+
+1. `PrinterStringsScope` por encima del widget.
+2. `PrinterStrings.defaults`, si la app lo fijó.
+3. Idioma de `Localizations.maybeLocaleOf(context)` (`es` / `en` / `pt`).
+4. Español.
+
+Los parámetros de texto que pases explícitamente (`buttonText`,
+`printingText`, `emptyText`) siempre ganan.
+
+### 1. Sin hacer nada (automático por idioma)
+
+Si la app declara `locale`/`supportedLocales` en `MaterialApp`, el plugin
+habla ese idioma. Sin localización, queda en español como antes.
+
+### 2. Textos globales al arrancar
+
+```dart
+void main() {
+  PrinterStrings.defaults = PrinterStrings.en.copyWith(
+    printButton: 'Print receipt',
+  );
+  runApp(const MyApp());
+}
+```
+
+`PrinterStrings.defaults` también lo usa el código sin `BuildContext`
+(`PrinterConnectionManager.lastPrintError`, `describePrintError`).
+
+### 3. Scope con los textos de la app (intl / gen-l10n / lo que uses)
+
+```dart
+MaterialApp(
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  builder: (context, child) {
+    final l10n = AppLocalizations.of(context);
+    return PrinterStringsScope(
+      // Parte del idioma incluido y reemplaza lo que la app traduce.
+      strings: PrinterStrings.forLocale(Localizations.localeOf(context))
+          .copyWith(
+        printButton: l10n.printReceipt,
+        printing: l10n.printing,
+        noPrinterConnected: l10n.noPrinterConnected,
+        connectedChip: (name) => l10n.printerConnected(name),
+        minutesAgo: (n) => l10n.minutesAgo(n),
+      ),
+      child: child!,
+    );
+  },
+)
+```
+
+Los textos con valores son funciones (`connectedChip`, `connectedTo`,
+`minutesAgo`, `found`…), así que encajan con los métodos que genera gen-l10n
+(incluidos plurales). El scope puede ir en cualquier subárbol; el selector y
+los diálogos que abre el botón heredan los textos del botón aunque se muestren
+en otra ruta.
+
 ## 🎯 Funcionalidades Avanzadas
 
 ### Modal Automático de Selección de Impresora
@@ -639,8 +706,8 @@ SmartThermalPrintButton(
   ],
   
   // Configuración del botón
-  buttonText: 'Imprimir',                  // Texto del botón
-  printingText: 'Imprimiendo...',          // Texto durante impresión
+  buttonText: 'Imprimir',                  // Opcional; sin él, PrinterStrings.printButton
+  printingText: 'Imprimiendo...',          // Opcional; sin él, PrinterStrings.printing
   icon: Icon(Icons.print),                 // Icono del botón
   height: 56.0,                           // Altura del botón
   

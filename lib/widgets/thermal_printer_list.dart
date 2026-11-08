@@ -26,8 +26,9 @@ class ThermalPrinterList extends StatefulWidget {
   /// Color del icono de conexión
   final Color? connectionIconColor;
 
-  /// Texto para cuando no hay impresoras
-  final String emptyText;
+  /// Texto para cuando no hay impresoras. Sin él se usa
+  /// [PrinterStrings.noPrintersFound] del idioma actual.
+  final String? emptyText;
 
   const ThermalPrinterList({
     super.key,
@@ -37,7 +38,7 @@ class ThermalPrinterList extends StatefulWidget {
     this.onConnectionFailed,
     this.itemDecoration,
     this.connectionIconColor,
-    this.emptyText = 'No se encontraron impresoras',
+    this.emptyText,
   });
 
   @override
@@ -50,6 +51,15 @@ class _ThermalPrinterListState extends State<ThermalPrinterList> {
   bool _isScanning = false;
   final PrinterConnectionManager _connectionManager =
       PrinterConnectionManager.instance;
+
+  /// Textos del idioma actual (ver [PrinterStrings.of]).
+  PrinterStrings _s = PrinterStrings.es;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _s = PrinterStrings.of(context);
+  }
 
   @override
   void initState() {
@@ -111,18 +121,18 @@ class _ThermalPrinterListState extends State<ThermalPrinterList> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Conectado a ${printer.name}'),
+            content: Text(_s.connectedTo(printer.name ?? _s.unnamedPrinter)),
             backgroundColor: Colors.green,
           ),
         );
       }
     } else {
-      final error = _connectionManager.connectionError ?? 'Error de conexión';
+      final error = _connectionManager.connectionError ?? _s.connectionError;
       widget.onConnectionFailed?.call(error);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: $error'),
+            content: Text(_s.errorDetail(error)),
             backgroundColor: Colors.red,
           ),
         );
@@ -180,7 +190,7 @@ class _ThermalPrinterListState extends State<ThermalPrinterList> {
       child: ListTile(
         leading: _buildConnectionTypeIcon(printer.connectionType),
         title: Text(
-          printer.name ?? 'Impresora sin nombre',
+          printer.name ?? _s.unnamedPrinter,
           style: TextStyle(
             fontWeight: isConnected ? FontWeight.bold : FontWeight.normal,
             color: isConnected ? Colors.green.shade800 : Colors.black87,
@@ -191,11 +201,13 @@ class _ThermalPrinterListState extends State<ThermalPrinterList> {
           children: [
             if (printer.address != null)
               Text(
-                'Dirección: ${printer.address}',
+                _s.addressLabel(printer.address!),
                 style: const TextStyle(fontSize: 12),
               ),
             Text(
-              'Tipo: ${printer.connectionType?.name ?? 'Desconocido'}',
+              _s.typeLabel(
+                printer.connectionType?.name ?? _s.unknownConnectionType,
+              ),
               style: const TextStyle(fontSize: 12),
             ),
           ],
@@ -211,7 +223,7 @@ class _ThermalPrinterListState extends State<ThermalPrinterList> {
                 : IconButton(
                     icon: const Icon(Icons.link),
                     onPressed: () => _connectToPrinter(printer),
-                    tooltip: 'Conectar',
+                    tooltip: _s.connect,
                   ),
         onTap: isConnected || isConnecting
             ? null
@@ -231,7 +243,7 @@ class _ThermalPrinterListState extends State<ThermalPrinterList> {
             children: [
               Expanded(
                 child: Text(
-                  'Impresoras disponibles',
+                  _s.availablePrinters,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
@@ -245,7 +257,7 @@ class _ThermalPrinterListState extends State<ThermalPrinterList> {
                 IconButton(
                   icon: const Icon(Icons.refresh),
                   onPressed: _startScanning,
-                  tooltip: 'Buscar impresoras',
+                  tooltip: _s.searchPrinters,
                 ),
             ],
           ),
@@ -265,7 +277,7 @@ class _ThermalPrinterListState extends State<ThermalPrinterList> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        widget.emptyText,
+                        widget.emptyText ?? _s.noPrintersFound,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey.shade600,
@@ -275,7 +287,7 @@ class _ThermalPrinterListState extends State<ThermalPrinterList> {
                       ElevatedButton.icon(
                         onPressed: _startScanning,
                         icon: const Icon(Icons.search),
-                        label: const Text('Buscar impresoras'),
+                        label: Text(_s.searchPrinters),
                       ),
                     ],
                   ),
